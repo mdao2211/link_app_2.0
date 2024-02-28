@@ -1,7 +1,7 @@
-import NextAuth from "next-auth";
 import GoogleProvider from "next-auth/providers/google";
 import GitHubProvider from "next-auth/providers/github";
-export const { handlers: {GET, POST}, auth, signIn, signOut } = NextAuth({
+import Token from "next-auth";
+export const authOptions = {
   providers: [
     GoogleProvider({
       clientId: "process.env.GOOGLE_CLIENT_ID",
@@ -12,4 +12,22 @@ export const { handlers: {GET, POST}, auth, signIn, signOut } = NextAuth({
         clientSecret: "process.env.GITHUB_CLIENT_SECRET", 
     }),
   ],
-});
+  callbacks: {
+    jwt: async ({ token, user }: { token: typeof Token & { jwt: string } | null; user: { jwt: string } | null }) => {
+      // user is only available the first time a user signs in authorized
+      if (user) {
+        return {
+          ...token,
+          jwt: user.jwt,
+        };
+      }
+      return token;
+    },
+    session: async ({ session, token }: { session: { jwt?: string }; token: typeof Token & { jwt: string } | null }) => {
+      if (token) {
+        session.jwt = token.jwt;
+      }
+      return session;
+    },
+  },
+};
