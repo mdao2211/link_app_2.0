@@ -1,13 +1,13 @@
 /* eslint-disable react/react-in-jsx-scope */
 "use client";
 import Image from "next/image";
-import githubLogo from "@/public/github.png";
+import linkIcon from "@/public/link_icon.png";
 import { LoginButton } from "@/components/auth/login-button";
 import { Button } from "@/components/ui/button";
 import { RegisterButton } from "@/components/auth/register-button";
 export default function homePage() {
   return (
-    <>
+    <div className="flex min-h-screen flex-col justify-between">
       {/* HEADER */}
       <header className="fixed inset-x-0 top-0 z-[9999] py-1 w-full transition-all bg-gray-300">
         <div className="buttonHidden">
@@ -33,7 +33,7 @@ export default function homePage() {
         <div className="mx-auto w-full max-w-screen-xl px-2.5 lg:px-20">
           <div className="flex h-14 items-center justify-between">
             <div className=" flex items-center space-x-4 headerContent__left">
-              <Image src={githubLogo} alt="LINK Logo" width={50} height={50} />
+              <Image src={linkIcon} alt="LINK Logo" width={50} height={50} />
               <a href="#">
                 <p className="text-4xl font-black">LINK</p>
               </a>
@@ -59,7 +59,7 @@ export default function homePage() {
         <h1 className="mt-5 font-display text-4xl font-extrabold leading-[1.15] text-black sm:text-6xl sm:leading-[1.15]">
           Short Links With
           <br />
-          <span className="bg-gradient-to-r from-amber-500 via-orange-600 to-yellow-500 bg-clip-text text-transparent">
+          <span className="bg-gradient-to-r from-indigo-500 from-10% via-sky-500 via-30% to-emerald-500 to-90% bg-clip-text text-transparent">
             Superpowers
           </span>
         </h1>
@@ -551,6 +551,6 @@ export default function homePage() {
           </div>
         </div>
       </footer>
-    </>
+    </div>
   );
 }

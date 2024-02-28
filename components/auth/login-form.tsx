@@ -28,7 +28,7 @@ export const LoginForm = () => {
         resolver: zodResolver(LoginSchema),
         defaultValues: {
             email: "",
-            password: "",
+            // password: "",
         }
     })
 
@@ -39,8 +39,11 @@ export const LoginForm = () => {
         startTransition(() => {
             login(values)
             .then((data) => {
-                setError(data.error);
-                setSuccess(data.success)
+                if (data && data.error) {
+                    setError(data.error);
+                    // Ensure that success is available before accessing it
+                    setSuccess(data.success)
+                }
             })
         })
     }
@@ -75,7 +78,7 @@ export const LoginForm = () => {
                     </FormItem>
                  )}
                 />
-                <FormField
+                {/* <FormField
                  control={form.control}
                  name="password"   
                  render={({ field }) => (
@@ -91,8 +94,8 @@ export const LoginForm = () => {
                         </FormControl>
                         <FormMessage />
                     </FormItem>
-                 )}
-                />
+                 )} */}
+                {/* /> */}
             </div>
             <FormError message={error}/>
             <FormSuccess message={success}/>
