@@ -10,7 +10,6 @@ import plusButton from "@/icons/plus-svgrepo-com.svg";
 import chevronUpDown from "@/icons/chevron-up-chevron-down-svgrepo-com.svg";
 import { ProjectCard } from "@/components/auth/create-project";
 import { ProjectComponent } from "@/components/auth/project-component";
-import Link from "next/link";
 
 export default function userPage() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -22,6 +21,12 @@ export default function userPage() {
 
   const togglePopup = () => {
     setIsPopupOpen(!isPopupOpen);
+  };
+
+  const handleOutsideClick = (e: React.MouseEvent<HTMLDivElement>) => {
+    if (e.target === e.currentTarget) {
+      setIsPopupOpen(false);
+    }
   };
 
   const toggleProjectMenu = () => {
@@ -89,7 +94,7 @@ export default function userPage() {
                     <div className="p-2 text-xs text-gray-500">My Projects</div>
                     <a
                       className="relative flex w-full items-center space-x-2 rounded-md px-2 py-1.5 hover:bg-gray-100 active:bg-gray-200  transition-all duration-75"
-                      href="#"
+                      href="/auth/project_page"
                     >
                       <img
                         width={20}
@@ -104,7 +109,15 @@ export default function userPage() {
                     </a>
                     <button className="flex w-full cursor-pointer items-center space-x-2 rounded-md p-2 transition-all duration-75 hover:bg-gray-100">
                       <Image src={plusButton} alt={"plus button"} />
-                      <span className="block truncate">Add a new project</span>
+                      <span className="block truncate">
+                        <button
+                          onClick={() => {
+                            setIsPopupOpen(true);
+                          }}
+                        >
+                          Add a new project
+                        </button>
+                      </span>
                     </button>
                   </div>
                 </div>
@@ -165,14 +178,19 @@ export default function userPage() {
                 className="group flex h-10 w-full items-center justify-center space-x-2 rounded-md border px-4 text-sm transition-all border-black bg-black text-white hover:bg-white hover:text-black"
                 onClick={togglePopup}
               >
-                <p className="">Create project</p>
+                <p>Create project</p>
               </button>
             </div>
           </div>
         </div>
       </div>
       {/* Popup */}
-      {isPopupOpen && <ProjectCard />}
+      {isPopupOpen && (<div
+          className="fixed top-0 left-0 right-0 bottom-0 flex justify-center items-center z-50 bg-gray-100 bg-opacity-50 backdrop-blur-md"
+          onClick={handleOutsideClick}
+        >
+          <ProjectCard />
+        </div>)}
       {/* PROJECTCOMPONENTS */}
       <div className="mx-auto w-full max-w-screen-xl px-2.5 lg:px-20">
         <div className="my-10 grid grid-cols-1 gap-5 lg:grid-cols-2 xl:grid-cols-3">

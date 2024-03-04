@@ -1,11 +1,192 @@
-import React from 'react';
+"use client"
+/* eslint-disable @next/next/no-img-element */
+import React, { useState } from "react";
+import Image from "next/image";
+import linkIcon from "@/public/link_icon.png";
+import slashLine from "@/icons/line-segment-svgrepo-com.svg";
+import logOutIcon from "@/icons/sign-out-2-svgrepo-com.svg";
+import plusButton from "@/icons/plus-svgrepo-com.svg";
+import chevronUpDown from "@/icons/chevron-up-chevron-down-svgrepo-com.svg";
+import { UpgradePopup } from "@/components/auth/upgrade-popup";
+import { ProjectSelector } from "@/components/auth/project-selector";
 
 const ProjectPage: React.FC = () => {
-    return (
-        <div className="min-h-screen w-full bg-gray-50">
-            {/* Nội dung của trang ProjectPage */}
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [isProjectMenuOpen, setIsProjectMenuOpen] = useState(false);
+  const [isPopupOpen, setIsPopupOpen] = useState(false);
+  const [isUpgradeOpen, setIsUpgradeOpen] = useState(false);
+
+  const toggleMenu = () => {
+    setIsMenuOpen(!isMenuOpen);
+  };
+  const togglePopup = () => {
+    setIsPopupOpen(!isPopupOpen);
+  };
+  const toggleProjectMenu = () => {
+    setIsProjectMenuOpen(!isProjectMenuOpen);
+  };
+
+  const toggleUpgrade = () => {
+    setIsUpgradeOpen(!isUpgradeOpen);
+  };
+  return (
+    <div className="min-h-screen w-full bg-gray-50">
+      {/* HEADER  */}
+      <header className="sticky left-0 right-0 top-0 z-20 border-b border-gray-200 bg-gray-300">
+        <div className="mx-auto w-full max-w-screen-xl px-2.5 lg:px-20">
+          <div className="flex h-16 items-center justify-between">
+            <div className="flex items-center">
+              <Image
+                className="mr-4"
+                src={linkIcon}
+                alt="LINK Logo"
+                width={50}
+                height={50}
+              />
+              <a href="/">
+                <p className="text-4xl font-black">LINK</p>
+              </a>
+              <Image className="mx-3" src={slashLine} alt={"slashLine"} />
+              {/* USER&PROJECTBUTTON  */}
+              <button
+                className="sm:inline-flex flex items-center justify-between rounded-lg bg-gray-300 p-1.5 text-left text-sm transition-all duration-75 hover:bg-gray-100 focus:outline-none active:bg-gray-200"
+                type="button"
+                onClick={toggleProjectMenu}
+              >
+                <div className="flex items-center space-x-3 pr-2">
+                  <img
+                    src="https://avatar.vercel.sh/clt3tvyqy0000tcgx0lnncd4y"
+                    alt="avatar"
+                    width={20}
+                    height={20}
+                    className="blur-0 h-8 w-8 flex-none overflow-hidden rounded-full"
+                    style={{ color: "transparent" }}
+                  />
+                </div>
+            
+                <div className="flex items-center space-x-3 sm:flex">
+                  <span className="inline-block max-w-[100px] truncate text-sm font-medium sm:max-w-[200px]">
+                    LINK
+                  </span>
+                  <span className="max-w-fit rounded-full border px-2 py-px text-xs font-medium capitalize whitespace-nowrap border-black bg-black text-white">
+                    Free
+                  </span>
+                </div>
+                <Image
+                  className="mx-2"
+                  src={chevronUpDown}
+                  alt={"chevronUpDown"}
+                />
+              </button>
+                {/* UpgradeButton  */}
+                <div>
+                <button 
+                className="mb-1 ml-3 hidden sm:block"
+                onClick={toggleUpgrade}>
+                    <span className="max-w-fit rounded-full border text-xs font-medium capitalize whitespace-nowrap bg-gradient-to-r from-violet-600 to-pink-600 text-white border-transparent px-3 py-1">Upgrade</span>
+                </button>
+                
+                {/* UpgradePopupOpen  */}
+                {isUpgradeOpen && <UpgradePopup/>}
+                </div>
+              {/* USER&PROJECT MENU DROPDOWN  */}
+              {isProjectMenuOpen && (
+                <div
+                  className="animate-slide-up-fade z-50 items-center rounded-md border border-gray-200 bg-white drop-shadow-lg sm:block"
+                  style={{
+                    position: "fixed",
+                    left: "310px",
+                    top: "0px",
+                    transform: "translate(52.8px, 62.4px)",
+                  }}
+                >
+                  <div className="relative mt-1 max-h-72 w-full space-y-0.5 overflow-auto rounded-md bg-white p-2 text-base sm:w-60 sm:text-sm sm:shadow-lg">
+                    <div className="p-2 text-xs text-gray-500">My Projects</div>
+                    <a
+                      className="relative flex w-full items-center space-x-2 rounded-md px-2 py-1.5 hover:bg-gray-100 active:bg-gray-200  transition-all duration-75"
+                      href="/auth/project_page"
+                    >
+                      <img
+                        width={20}
+                        height={20}
+                        src="https://avatar.vercel.sh/clt3tvyqy0000tcgx0lnncd4y"
+                        className="blur-0 h-7 w-7 shrink-0 overflow-hidden rounded-full"
+                        alt="avatar"
+                      />
+                      <span className="block truncate text-sm sm:max-w-[140px] font-normal">
+                        LINK
+                      </span>
+                    </a>
+                    <button className="flex w-full cursor-pointer items-center space-x-2 rounded-md p-2 transition-all duration-75 hover:bg-gray-100">
+                      <Image src={plusButton} alt={"plus button"} />
+                      <span className="block truncate">
+                        <button onClick={togglePopup}>Add a new project</button>
+                      </span>
+                    </button>
+                  </div>
+                </div>
+              )}
+            </div>
+            {/* ICON */}
+            <div className="flex items-center space-x-6">
+              <div className="relative inline-block">
+                <button
+                  className="sm:inline-flex group relative"
+                  type="button"
+                  onClick={toggleMenu}
+                >
+                  <img
+                    src="https://lh3.googleusercontent.com/a/ACg8ocJn1LgrTYXvKfMBAN3ZAtQF8VoUbaXitL00rdX27Q7s=s96-c"
+                    className="rounded-full border border-gray-300 h-9 w-9 transition-all duration-75 group-focus:outline-none group-active:scale-95 sm:h-10 sm:w-10"
+                    alt="user_logo"
+                  />
+                  <div className="absolute -bottom-0.5 -right-0.5 h-4 w-4 rounded-full border-2 border-white bg-green-600"></div>
+                </button>
+                {/* Dropdown menu */}
+                {isMenuOpen && (
+                  <div className="absolute right-0 mt-2 flex w-full flex-col space-y-px rounded-md bg-white p-3 sm:w-56">
+                    <a className="p-2" href="/">
+                      <p className="truncate text-sm font-medium text-gray-900">
+                        Manh Dao
+                      </p>
+                      <p className="truncate text-sm text-gray-500">
+                        manhdao@gmail.com
+                      </p>
+                    </a>
+                    <div className="py-1">
+                      <button className="w-full rounded-md p-2 text-sm transition-all duration-75 hover:bg-gray-100 active:bg-gray-200">
+                        <a
+                          className="flex items-center justify-start space-x-2"
+                          href="/auth/login"
+                        >
+                          <Image src={logOutIcon} alt={"LogOut"}></Image>
+                          <p>Log out</p>
+                        </a>
+                      </button>
+                    </div>
+                  </div>
+                )}
+              </div>
+            </div>
+          </div>
+          <ProjectSelector/>
         </div>
-    );
-}
+      </header>
+      {/* LINK  */}
+      <div className="flex h-36 items-center border-b border-gray-200 bg-white">
+         <div className="mx-auto w-full max-w-screen-xl px-2.5 lg:px-20">
+            <div className="flex items-center justify-between">
+                    <h1 className="text-2xl text-gray-600">Links</h1>
+                    <div className="flex">
+                    <button className="group flex h-10 w-full items-center justify-center space-x-2 rounded-md border px-4 text-sm transition-all border-black bg-black text-white hover:bg-white hover:text-black">
+                        <p className="flex-1 text-left">Create link</p>
+                    </button>
+                    </div>
+            </div>
+         </div>           
+      </div>
+    </div>
+  );
+};
 
 export default ProjectPage;

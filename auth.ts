@@ -1,33 +1,34 @@
-import GoogleProvider from "next-auth/providers/google";
-import GitHubProvider from "next-auth/providers/github";
-import Token from "next-auth";
-export const authOptions = {
-  providers: [
-    GoogleProvider({
-      clientId: "process.env.GOOGLE_CLIENT_ID",
-      clientSecret: "process.env.GOOGLE_CLIENT_SECRET",
-    }),
-    GitHubProvider({ 
-        clientId: "process.env.GITHUB_CLIENT_ID", 
-        clientSecret: "process.env.GITHUB_CLIENT_SECRET", 
-    }),
-  ],
-  callbacks: {
-    jwt: async ({ token, user }: { token: typeof Token & { jwt: string } | null; user: { jwt: string } | null }) => {
-      // user is only available the first time a user signs in authorized
-      if (user) {
-        return {
-          ...token,
-          jwt: user.jwt,
-        };
-      }
-      return token;
-    },
-    session: async ({ session, token }: { session: { jwt?: string }; token: typeof Token & { jwt: string } | null }) => {
-      if (token) {
-        session.jwt = token.jwt;
-      }
-      return session;
-    },
-  },
-};
+const authOptions = {
+    async authorize(credentials: { email: string; }, req: any) {
+          
+          try {
+            const res = await fetch("http://localhost:8000/auth/login", {
+              method: "POST",
+              body: JSON.stringify({
+                email: credentials.email,
+              }),
+              headers: { "Content-Type": "application/json" },
+            });
+  
+            if (!res.ok) {
+              // credentials are invalid
+              return null;
+            }
+  
+            const parsedResponse = await res.json();
+  
+            // accessing the jwt returned by server
+            const jwt = parsedResponse.access_token;
+  
+  // You can make more request to get other information about the user eg. Profile details
+  
+           // return user credentials together with jwt
+            return {
+              ...credentials,
+              jwt,
+            };
+          } catch (e) {
+            return null;
+          }
+        },
+  }
