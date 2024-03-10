@@ -1,34 +1,53 @@
-const authOptions = {
-    async authorize(credentials: { email: string; }, req: any) {
-          
-          try {
-            const res = await fetch("http://localhost:8000/auth/login", {
-              method: "POST",
-              body: JSON.stringify({
-                email: credentials.email,
-              }),
-              headers: { "Content-Type": "application/json" },
-            });
-  
-            if (!res.ok) {
-              // credentials are invalid
-              return null;
-            }
-  
-            const parsedResponse = await res.json();
-  
-            // accessing the jwt returned by server
-            const jwt = parsedResponse.access_token;
-  
-  // You can make more request to get other information about the user eg. Profile details
-  
-           // return user credentials together with jwt
-            return {
-              ...credentials,
-              jwt,
-            };
-          } catch (e) {
+import NextAuth from "next-auth";
+import Credentials from "next-auth/providers/credentials";
+import { skipCSRFCheck } from "@auth/core";
+import type { NextAuthConfig } from "next-auth";
+
+export const config = {
+  skipCSRFCheck,
+  providers: [
+    Credentials({
+      // name: "credentials",
+      credentials: {
+        token: {},
+      },
+
+      async authorize(credentials, req) {
+        // Add logic here to look up the user from the credentials supplied
+        try {
+          const rawRes = await fetch("http://localhost:8080/user/me", {
+            method: "GET",
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${credentials.token}`,
+            },
+          });
+          if (!rawRes.ok) {
+            console.log(await rawRes.json());
             return null;
           }
-        },
-  }
+          const user = await rawRes.json();
+          return user;
+        } catch (error) {
+          console.log("🚀 ~ authorize ~ error:", error);
+          return null;
+        }
+      },
+    }),
+  ],
+  callbacks: {
+    authorized({ auth, request: { nextUrl } }) {
+      const isLoggedIn = !!auth?.user;
+      const isOnDashboard = nextUrl.pathname.startsWith("/auth/user_page");
+      if (isOnDashboard) {
+        if (isLoggedIn) return true;
+        return false; // Redirect unauthenticated users to login page
+      } else if (isLoggedIn) {
+        return Response.redirect(new URL("/auth/user_page", nextUrl));
+      }
+      return true;
+    },
+  },
+} satisfies NextAuthConfig;
+
+export const { handlers, auth, signIn, signOut } = NextAuth(config);

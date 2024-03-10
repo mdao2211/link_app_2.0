@@ -1,6 +1,7 @@
-"use client";
+/* eslint-disable @next/next/no-async-client-component */
 /* eslint-disable @next/next/no-img-element */
 /* eslint-disable react-hooks/rules-of-hooks */
+"use client";
 import { useState, useRef, useEffect } from "react";
 import Image from "next/image";
 import linkIcon from "@/public/link_icon.png";
@@ -10,11 +11,13 @@ import plusButton from "@/icons/plus-svgrepo-com.svg";
 import chevronUpDown from "@/icons/chevron-up-chevron-down-svgrepo-com.svg";
 import { ProjectCard } from "@/components/auth/create-project";
 import { ProjectComponent } from "@/components/auth/project-component";
-
-export default function userPage() {
+import { signIn, signOut, useSession } from "next-auth/react";
+export default function UserPage() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isPopupOpen, setIsPopupOpen] = useState(false);
   const [isProjectMenuOpen, setIsProjectMenuOpen] = useState(false);
+  const { data: session, update, status } = useSession();
+
   const toggleMenu = () => {
     setIsMenuOpen(!isMenuOpen);
   };
@@ -132,7 +135,8 @@ export default function userPage() {
                   onClick={toggleMenu}
                 >
                   <img
-                    src="https://lh3.googleusercontent.com/a/ACg8ocJn1LgrTYXvKfMBAN3ZAtQF8VoUbaXitL00rdX27Q7s=s96-c"
+                    src="https://avatars.githubusercontent.com/u/145409639?v=4"
+                    // src={session?.user?.image || "default_image"}
                     className="rounded-full border border-gray-300 h-9 w-9 transition-all duration-75 group-focus:outline-none group-active:scale-95 sm:h-10 sm:w-10"
                     alt="user_logo"
                   />
@@ -140,25 +144,29 @@ export default function userPage() {
                 </button>
                 {/* Dropdown menu */}
                 {isMenuOpen && (
-                  <div className="absolute right-0 mt-2 flex w-full flex-col space-y-px rounded-md bg-white p-3 sm:w-56">
+                  <div className="absolute right-0 mt-2 flex w-full flex-col space-y-px rounded-md bg-white p-3 sm:w-56 shadow-lg">
                     <a className="p-2" href="/">
                       <p className="truncate text-sm font-medium text-gray-900">
                         Manh Dao
+                        {/* {session?.user?.name} */}
                       </p>
                       <p className="truncate text-sm text-gray-500">
                         manhdao@gmail.com
                       </p>
                     </a>
                     <div className="py-1">
-                      <button className="w-full rounded-md p-2 text-sm transition-all duration-75 hover:bg-gray-100 active:bg-gray-200">
-                        <a
-                          className="flex items-center justify-start space-x-2"
-                          href="/auth/login"
-                        >
-                          <Image src={logOutIcon} alt={"LogOut"}></Image>
-                          <p>Log out</p>
-                        </a>
-                      </button>
+                      <form
+                        action={async () => {
+                          await signOut();
+                        }}
+                      >
+                        <button className="w-full rounded-md p-2 text-sm transition-all duration-75 hover:bg-gray-100 active:bg-gray-200">
+                          <a className="flex items-center justify-start space-x-2">
+                            <Image src={logOutIcon} alt={"LogOut"}></Image>
+                            <p>Log out</p>
+                          </a>
+                        </button>
+                      </form>
                     </div>
                   </div>
                 )}
@@ -185,12 +193,14 @@ export default function userPage() {
         </div>
       </div>
       {/* Popup */}
-      {isPopupOpen && (<div
+      {isPopupOpen && (
+        <div
           className="fixed top-0 left-0 right-0 bottom-0 flex justify-center items-center z-50 bg-gray-100 bg-opacity-50 backdrop-blur-md"
           onClick={handleOutsideClick}
         >
           <ProjectCard />
-        </div>)}
+        </div>
+      )}
       {/* PROJECTCOMPONENTS */}
       <div className="mx-auto w-full max-w-screen-xl px-2.5 lg:px-20">
         <div className="my-10 grid grid-cols-1 gap-5 lg:grid-cols-2 xl:grid-cols-3">
