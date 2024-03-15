@@ -6,17 +6,15 @@ import { useState, useRef, useEffect } from "react";
 import Image from "next/image";
 import linkIcon from "@/public/link_icon.png";
 import slashLine from "@/icons/line-segment-svgrepo-com.svg";
-import logOutIcon from "@/icons/sign-out-2-svgrepo-com.svg";
 import plusButton from "@/icons/plus-svgrepo-com.svg";
 import chevronUpDown from "@/icons/chevron-up-chevron-down-svgrepo-com.svg";
-import { ProjectCard } from "@/components/auth/create-project";
-import { ProjectComponent } from "@/components/auth/project-component";
-import { signIn, signOut, useSession } from "next-auth/react";
+import { ProjectCard } from "@/components/auth/userpage/create-project";
+import { ProjectComponent } from "@/components/auth/projectpage/project-component";
+import { SignOut } from "@/components/auth/log-out";
 export default function UserPage() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isPopupOpen, setIsPopupOpen] = useState(false);
   const [isProjectMenuOpen, setIsProjectMenuOpen] = useState(false);
-  const { data: session, update, status } = useSession();
 
   const toggleMenu = () => {
     setIsMenuOpen(!isMenuOpen);
@@ -113,13 +111,7 @@ export default function UserPage() {
                     <button className="flex w-full cursor-pointer items-center space-x-2 rounded-md p-2 transition-all duration-75 hover:bg-gray-100">
                       <Image src={plusButton} alt={"plus button"} />
                       <span className="block truncate">
-                        <button
-                          onClick={() => {
-                            setIsPopupOpen(true);
-                          }}
-                        >
-                          Add a new project
-                        </button>
+                        <button onClick={togglePopup}>Add a new project</button>
                       </span>
                     </button>
                   </div>
@@ -155,18 +147,7 @@ export default function UserPage() {
                       </p>
                     </a>
                     <div className="py-1">
-                      <form
-                        action={async () => {
-                          await signOut();
-                        }}
-                      >
-                        <button className="w-full rounded-md p-2 text-sm transition-all duration-75 hover:bg-gray-100 active:bg-gray-200">
-                          <a className="flex items-center justify-start space-x-2">
-                            <Image src={logOutIcon} alt={"LogOut"}></Image>
-                            <p>Log out</p>
-                          </a>
-                        </button>
-                      </form>
+                      <SignOut />
                     </div>
                   </div>
                 )}
@@ -180,15 +161,7 @@ export default function UserPage() {
         <div className="mx-auto w-full max-w-screen-xl px-2.5 lg:px-20">
           <div className="flex items-center justify-between">
             <h1 className="text-2xl text-gray-600">My Projects</h1>
-            <div>
-              <button
-                type="button"
-                className="group flex h-10 w-full items-center justify-center space-x-2 rounded-md border px-4 text-sm transition-all border-black bg-black text-white hover:bg-white hover:text-black"
-                onClick={togglePopup}
-              >
-                <p>Create project</p>
-              </button>
-            </div>
+            <ProjectCard />
           </div>
         </div>
       </div>

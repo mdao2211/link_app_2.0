@@ -113,7 +113,7 @@ export const LoginForm = () => {
 
           <Button
             disabled={isPending}
-            onClick={notify}
+            // onClick={success_notification}
             type="submit"
             className="w-full"
           >

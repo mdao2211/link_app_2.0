@@ -1,4 +1,4 @@
-"use client";
+"use server";
 import { LoginForm } from "@/components/auth/login-form";
 
 const LoginPage = () => {

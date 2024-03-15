@@ -20,36 +20,27 @@ import { FormSuccess } from "@/components/form-success";
 import { register } from "@/actions/register";
 import { useState, useTransition } from "react";
 import React from "react";
-import { ToastContainer, toast } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
+import toast, { Toaster } from "react-hot-toast";
+
 export const RegisterForm = () => {
   const [error, setError] = useState<string | undefined>("");
   const [success, setSuccess] = useState<string | undefined>("");
   const [isPending, startTransition] = useTransition();
 
-  const form = useForm<z.infer<typeof RegisterSchema>>({
+  type Inputs = {
+    name: string;
+    email: string;
+  };
+
+  const form = useForm<Inputs>({
     resolver: zodResolver(RegisterSchema),
     defaultValues: {
-      email: "",
-      // password: "",
       name: "",
+      email: "",
     },
   });
 
-  const notify = () => {
-    toast.error("Invalid request!", {
-      position: "top-center",
-      autoClose: 5000,
-      hideProgressBar: false,
-      closeOnClick: true,
-      pauseOnHover: true,
-      draggable: true,
-      progress: undefined,
-      theme: "light",
-    });
-  };
-
-  const onSubmit = (values: z.infer<typeof RegisterSchema>) => {
+  const onSubmit = async (values: Inputs) => {
     setError("");
     setSuccess("");
 
@@ -110,16 +101,9 @@ export const RegisterForm = () => {
           </div>
           <FormError message={error} />
           <FormSuccess message={success} />
-
-          <Button
-            disabled={isPending}
-            type="submit"
-            className="w-full"
-            onClick={notify}
-          >
+          <Button disabled={isPending} type="submit" className="w-full">
             Create an account
           </Button>
-          <ToastContainer />
         </form>
       </Form>
     </CardWrapper>

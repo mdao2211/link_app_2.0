@@ -1,9 +1,6 @@
 /* eslint-disable @next/next/no-img-element */
 /* eslint-disable react/react-in-jsx-scope */
 "use client";
-
-import { ACCESS_TOKEN } from "../constants";
-import LoadingIndicator from "./LoadingIndicator";
 import { useState } from "react";
 import { HeaderHomepage } from "@/components/auth/homepage/header-homepage";
 import { MainHomepage } from "@/components/auth/homepage/main-homepage";
@@ -16,14 +13,6 @@ export default function HomePage() {
   const [authenticated, setAuthenticated] = useState(false);
   const [loading, setLoading] = useState(false);
   const [logoutMessage, setLogoutMessage] = useState("");
-
-  const handleLogout = () => {
-    localStorage.removeItem(ACCESS_TOKEN);
-    setLogoutMessage("You're safely logged out!");
-  };
-  if (loading) {
-    return <LoadingIndicator />;
-  }
 
   return (
     <div className="app flex min-h-screen flex-col justify-between">
@@ -41,9 +30,8 @@ export default function HomePage() {
         {/* GITHUBINFO  */}
         <GithubInfoHomepage />
         {/* FOOTER  */}
-        <FooterHomepage />
+        <FooterHomepage />\{" "}
       </div>
-
       {logoutMessage && <div>{logoutMessage}</div>}
     </div>
   );
