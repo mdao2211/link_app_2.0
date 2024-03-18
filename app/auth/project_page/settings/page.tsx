@@ -28,7 +28,7 @@ const SettingsPage: React.FC = () => {
   return (
     <div className="min-h-screen w-full bg-gray-50">
       {/* HEADER  */}
-      <header className="sticky left-0 right-0 top-0 z-20 border-b border-gray-200 bg-gray-300">
+      <header className="sticky left-0 right-0 top-0 z-[1000] border-b border-gray-200 bg-gray-300">
         <div className="mx-auto w-full max-w-screen-xl px-2.5 lg:px-20">
           <div className="flex h-16 items-center justify-between">
             <div className="flex items-center">

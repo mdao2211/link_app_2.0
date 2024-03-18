@@ -11,6 +11,7 @@ import chevronUpDown from "@/icons/chevron-up-chevron-down-svgrepo-com.svg";
 import { ProjectCard } from "@/components/auth/userpage/create-project";
 import { ProjectComponent } from "@/components/auth/projectpage/project-component";
 import { SignOut } from "@/components/auth/log-out";
+
 export default function UserPage() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isPopupOpen, setIsPopupOpen] = useState(false);
@@ -33,7 +34,24 @@ export default function UserPage() {
   const toggleProjectMenu = () => {
     setIsProjectMenuOpen(!isProjectMenuOpen);
   };
+  //FETCHING DATA
+  const [data, setData] = useState<{ username: string } | null>(null);
+  const [isLoading, setLoading] = useState(true);
 
+  useEffect(() => {
+    fetch("http://localhost:8080/user/me")
+      .then((res) => res.json())
+      .then((data) => {
+        setData(data);
+        setLoading(false);
+      });
+  }, []);
+
+  if (isLoading) return <p>Loading...</p>;
+  if (!data) return <p>No profile data</p>;
+  console.log(data);
+
+  //
   return (
     <div className="min-h-screen w-full bg-gray-50">
       {/* HEADER  */}
@@ -70,7 +88,7 @@ export default function UserPage() {
                 </div>
                 <div className="flex items-center space-x-3 sm:flex">
                   <span className="inline-block max-w-[100px] truncate text-sm font-medium sm:max-w-[200px]">
-                    Manh Dao
+                    {data.username}
                   </span>
                 </div>
                 <Image
@@ -139,7 +157,7 @@ export default function UserPage() {
                   <div className="absolute right-0 mt-2 flex w-full flex-col space-y-px rounded-md bg-white p-3 sm:w-56 shadow-lg">
                     <a className="p-2" href="/">
                       <p className="truncate text-sm font-medium text-gray-900">
-                        Manh Dao
+                        {data.username}
                         {/* {session?.user?.name} */}
                       </p>
                       <p className="truncate text-sm text-gray-500">

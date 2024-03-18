@@ -17,7 +17,7 @@ import {
 } from "@/components/ui/form";
 import { FormError } from "@/components/form-error";
 import { FormSuccess } from "@/components/form-success";
-import { login } from "@/actions/login";
+// import {login} from "@/actions/login";
 import { useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import React from "react";
@@ -63,21 +63,21 @@ export const LoginForm = () => {
     },
   });
 
-  const onSubmit = (values: z.infer<typeof LoginSchema>) => {
-    startTransition(() => {
-      login(values).then((data) => {
-        if (data && data.error) {
-          setError(data.error as string);
-          if ("success" in data) {
-            setSuccess(data.success as string);
-            success_notification();
-          }
-        } else {
-          router.push("/auth/user_page");
-        }
-      });
-    });
-  };
+  // const onSubmit = (values: z.infer<typeof LoginSchema>) => {
+  //   startTransition(() => {
+  //     login(values).then((data: { error: string; success: string }) => {
+  //       if (data && data.error) {
+  //         setError(data.error as string);
+  //         if ("success" in data) {
+  //           setSuccess(data.success as string);
+  //           success_notification();
+  //         }
+  //       } else {
+  //         router.push("/auth/user_page");
+  //       }
+  //     });
+  //   });
+  // };
 
   return (
     <CardWrapper
@@ -86,8 +86,9 @@ export const LoginForm = () => {
       backButtonHref="/auth/register"
       showSocial
     >
+      {/* onSubmit={form.handleSubmit(onSubmit)} */}
       <Form {...form}>
-        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+        <form className="space-y-6">
           <div className="space-y-4">
             <FormField
               control={form.control}
