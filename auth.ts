@@ -2,6 +2,7 @@ import NextAuth from "next-auth";
 import Credentials from "next-auth/providers/credentials";
 import { skipCSRFCheck } from "@auth/core";
 import type { NextAuthConfig } from "next-auth";
+import { cookies } from "next/headers";
 
 export const config = {
   skipCSRFCheck,
@@ -14,7 +15,16 @@ export const config = {
 
       async authorize(credentials, req) {
         // Add logic here to look up the user from the credentials supplied
+        console.log("Token:", credentials.token); // Log token to console
+
         try {
+          cookies().set({
+            name: "serverToken",
+            value: credentials.token as string,
+            httpOnly: true,
+            path: "/",
+          });
+
           const rawRes = await fetch("http://localhost:8080/user/me", {
             method: "GET",
             headers: {
@@ -22,12 +32,14 @@ export const config = {
               Authorization: `Bearer ${credentials.token}`,
             },
           });
+
           if (!rawRes.ok) {
             console.log(await rawRes.json());
             return null;
           }
           const user = await rawRes.json();
-          return user;
+
+          return { ...user, token: credentials.token };
         } catch (error) {
           console.log("🚀 ~ authorize ~ error:", error);
           return null;
