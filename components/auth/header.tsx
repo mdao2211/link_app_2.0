@@ -1,4 +1,4 @@
-"use client"
+"use client";
 import { Poppins } from "next/font/google";
 
 import { cn } from "@/lib/utils";
@@ -17,10 +17,7 @@ export const Header = ({ label }: HeaderProps) => {
     <div className="w-full flex flex-col gap-y-4 items-center justify-center">
       <h1 className={cn("text-3xl font-semibold", font.className)}>
         <span>
-          <a
-            href="http://localhost:3000/"
-            className="text-blue-500 hover:none"
-          >
+          <a href="http://localhost:3000/" className="text-blue-500 hover:none">
             LINK
           </a>
         </span>
