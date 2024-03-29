@@ -1,6 +1,5 @@
 import { cookies } from "next/headers";
 import { UserHeader } from "./header";
-
 async function getData() {
   try {
     const response = await fetch(`http://localhost:8080/user/me`, {

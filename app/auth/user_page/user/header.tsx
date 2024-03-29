@@ -7,8 +7,8 @@ import slashLine from "@/icons/line-segment-svgrepo-com.svg";
 import settingIcon from "@/icons/settings-svgrepo-com.svg";
 import plusButton from "@/icons/plus-svgrepo-com.svg";
 import chevronUpDown from "@/icons/chevron-up-chevron-down-svgrepo-com.svg";
-import { ProjectCard } from "@/components/auth/userpage/create-project";
-import { ProjectComponent } from "@/components/auth/projectpage/project-component";
+import { ProjectCard } from "@/app/auth/user_page/create-project/page";
+import { ProjectComponent } from "@/app/auth/user_page/project/project-component";
 import { SignOut } from "@/components/auth/log-out";
 import { cookies } from "next/headers";
 
@@ -153,12 +153,9 @@ export function UserHeader({ data }: { data: UserData }) {
                 <div className="absolute right-0 mt-2 flex w-full flex-col space-y-px rounded-md bg-white p-3 sm:w-56 shadow-lg">
                   <a className="p-2" href="/">
                     <p className="truncate text-sm font-medium text-gray-900">
-                      {/* {data.name} */}
-                      {/* {session?.user?.name} */}
+                      {data?.name}
                     </p>
                     <p className="truncate text-sm text-gray-500">
-                      {data?.name}
-                      <br />
                       {data?.email}
                     </p>
                   </a>

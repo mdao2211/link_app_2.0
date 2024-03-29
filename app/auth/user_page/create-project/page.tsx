@@ -3,11 +3,63 @@
 import Image from "next/image";
 import linkIcon from "@/public/link_icon.png";
 import questionIcon from "@/icons/question-circle-svgrepo-com.svg";
-import { useState } from "react";
+import { ChangeEvent, useState } from "react";
 import Modal from "@/app/closeModal";
+import { createDataProject } from "./create-data";
 
 export const ProjectCard = () => {
   const [modalShown, setModalShown] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+  const [formData, setFormData] = useState({
+    projectName: "",
+    projectSlug: "",
+  });
+  const [error, setError] = useState<string | null>(null);
+  const handleInputChange = (
+    e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
+  ) => {
+    setFormData((prevData) => ({
+      ...prevData,
+      [e.target.name]: e.target.value,
+    }));
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+
+    if (!formData.projectName || !formData.projectSlug) {
+      setError("Please fill in all the fields");
+      return;
+    }
+
+    setError(null);
+    setIsLoading(true);
+
+    // try {
+    //   const response = await fetch(
+    //     "http://localhost:8080/dashboard/create-project",
+    //     {
+    //       method: "POST",
+    //       headers: {
+    //         "Content-type": "application/json",
+    //         // Authorization: `Bearer ${cookies().get(`serverToken`)?.value}`,
+    //       },
+
+    //       body: JSON.stringify(formData),
+    //       // mode: "no-cors",
+    //     },
+    //   );
+    //   if (!response.ok) {
+    //     throw new Error("Failed to create project");
+    //   }
+    // } catch (error) {
+    //   console.log(error);
+    //   setError("Something went wrong. Please try again.");
+    // } finally {
+    //   setIsLoading(false);
+    // }
+    createDataProject;
+  };
 
   const handleOutsideClick = (e: React.MouseEvent<HTMLDivElement>) => {
     if (e.target === e.currentTarget) {
@@ -44,7 +96,10 @@ export const ProjectCard = () => {
               />
               <h3 className="text-lg font-medium">Create a new project</h3>
             </div>
-            <form className="flex flex-col space-y-6 bg-gray-50 px-4 py-8 text-left sm:px-16">
+            <form
+              onSubmit={handleSubmit}
+              className="flex flex-col space-y-6 bg-gray-50 px-4 py-8 text-left sm:px-16"
+            >
               <div>
                 <label htmlFor="name" className="flex items-center space-x-2">
                   <p className="block text-sm font-medium text-gray-700">
@@ -54,15 +109,15 @@ export const ProjectCard = () => {
                 </label>
                 <div className="mt-2 flex rounded-md shadow-sm">
                   <input
-                    id="name"
                     required
                     autoComplete="off"
                     className="block w-full rounded-md p-2 border-gray-300 text-gray-900 placeholder-gray-300 focus:border-gray-500 focus:outline-none focus:ring-gray-500 sm:text-sm"
                     placeholder="Strong Company."
                     aria-invalid="true"
                     type="text"
-                    // value=""
-                    name="name"
+                    name="projectName"
+                    value={formData.projectName}
+                    onChange={handleInputChange}
                   />
                 </div>
               </div>
@@ -87,18 +142,21 @@ export const ProjectCard = () => {
                     placeholder="Strong"
                     aria-invalid="true"
                     type="text"
-                    // value=""
-                    name="name"
+                    value={formData.projectSlug}
+                    name="projectSlug"
+                    onChange={handleInputChange}
                   />
                 </div>
               </div>
               <button
                 type="submit"
+                disabled={isLoading}
                 className="group flex h-10 w-full items-center justify-center space-x-2 rounded-md border px-4 text-sm transition-all border-black bg-black text-white hover:bg-white hover:text-black"
               >
-                <p>Create project</p>
+                {isLoading ? "Creating..." : "Create Project"}
               </button>
             </form>
+            {error && <p className="text-red-500 mt-4">{error}</p>}
           </div>
         </div>
       </Modal>

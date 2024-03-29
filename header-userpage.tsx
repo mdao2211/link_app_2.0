@@ -7,8 +7,8 @@ import slashLine from "@/icons/line-segment-svgrepo-com.svg";
 import settingIcon from "@/icons/settings-svgrepo-com.svg";
 import plusButton from "@/icons/plus-svgrepo-com.svg";
 import chevronUpDown from "@/icons/chevron-up-chevron-down-svgrepo-com.svg";
-import { ProjectCard } from "@/components/auth/userpage/create-project";
-import { ProjectComponent } from "@/components/auth/projectpage/project-component";
+import { ProjectCard } from "@/app/auth/user_page/create-project/page";
+import { ProjectComponent } from "@/app/auth/user_page/project/project-component";
 import { SignOut } from "@/components/auth/log-out";
 import { cookies } from "next/headers";
 
