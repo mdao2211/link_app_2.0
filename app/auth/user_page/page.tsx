@@ -4,8 +4,6 @@
 
 import { ProjectCard } from "@/app/auth/user_page/create-project/page";
 import ProjectComponentShow from "@/app/auth/user_page/project/page";
-import { SignOut } from "@/components/auth/log-out";
-import { UserHeader } from "@/app/auth/user_page/user/header";
 import User from "./user/page";
 
 export default function UserPage() {
@@ -23,7 +21,7 @@ export default function UserPage() {
         </div>
       </div>
       {/* PROJECTCOMPONENTS */}
-      <div className="mx-auto w-full max-w-screen-xl px-2.5 lg:px-20">
+      <div className="mx-auto w-full max-w-screen-xl px-2.5 lg:px-20 overflow-auto max-h-[calc(100vh-144px)]">
         <div className="my-10 grid-cols-3 lg:grid-cols-2 xl:grid-cols-3">
           <ProjectComponentShow />
         </div>

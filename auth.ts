@@ -48,12 +48,16 @@ export const config = {
     }),
   ],
   callbacks: {
-    authorized({ auth, request: { nextUrl } }) {
+    async authorized({ auth, request: { nextUrl } }) {
       const isLoggedIn = !!auth?.user;
       const isOnDashboard = nextUrl.pathname.startsWith("/auth/user_page");
+      const isOnProjectPage = nextUrl.pathname.startsWith("/auth/project_page");
+
       if (isOnDashboard) {
         if (isLoggedIn) return true;
         return false; // Redirect unauthenticated users to login page
+      } else if (isOnProjectPage && isLoggedIn) {
+        return true;
       } else if (isLoggedIn) {
         return Response.redirect(new URL("/auth/user_page", nextUrl));
       }

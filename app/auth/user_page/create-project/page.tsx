@@ -13,8 +13,11 @@ export const ProjectCard = () => {
   const [formData, setFormData] = useState({
     projectName: "",
     projectSlug: "",
+    totalClick: 0,
+    totalLink: 0,
   });
   const [error, setError] = useState<string | null>(null);
+
   const handleInputChange = (
     e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
   ) => {
@@ -27,38 +30,25 @@ export const ProjectCard = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    if (!formData.projectName || !formData.projectSlug) {
-      setError("Please fill in all the fields");
-      return;
-    }
-
     setError(null);
     setIsLoading(true);
+    try {
+      const formDataToSend = new FormData();
+      formDataToSend.set("projectName", formData.projectName);
+      formDataToSend.set("projectSlug", formData.projectSlug);
+      formDataToSend.set("totalClick", formData.totalClick.toString());
+      formDataToSend.set("totalLink", formData.totalLink.toString());
 
-    // try {
-    //   const response = await fetch(
-    //     "http://localhost:8080/dashboard/create-project",
-    //     {
-    //       method: "POST",
-    //       headers: {
-    //         "Content-type": "application/json",
-    //         // Authorization: `Bearer ${cookies().get(`serverToken`)?.value}`,
-    //       },
-
-    //       body: JSON.stringify(formData),
-    //       // mode: "no-cors",
-    //     },
-    //   );
-    //   if (!response.ok) {
-    //     throw new Error("Failed to create project");
-    //   }
-    // } catch (error) {
-    //   console.log(error);
-    //   setError("Something went wrong. Please try again.");
-    // } finally {
-    //   setIsLoading(false);
-    // }
-    createDataProject;
+      const response = await createDataProject(formDataToSend);
+      if (response.ok) setIsLoading(false);
+      console.log(response);
+    } catch (error) {
+      console.log(error);
+      setError("Something went wrong. Please try again.");
+    } finally {
+      setIsLoading(false);
+      location.reload();
+    }
   };
 
   const handleOutsideClick = (e: React.MouseEvent<HTMLDivElement>) => {
@@ -66,8 +56,9 @@ export const ProjectCard = () => {
       setModalShown(false);
     }
   };
+  // action={createDataProject}
   return (
-    <div className="ProjectCard">
+    <form onSubmit={handleSubmit}>
       <button
         type="button"
         className="group flex h-10 w-full items-center justify-center space-x-2 rounded-md border px-4 text-sm transition-all border-black bg-black text-white hover:bg-white hover:text-black"
@@ -96,10 +87,7 @@ export const ProjectCard = () => {
               />
               <h3 className="text-lg font-medium">Create a new project</h3>
             </div>
-            <form
-              onSubmit={handleSubmit}
-              className="flex flex-col space-y-6 bg-gray-50 px-4 py-8 text-left sm:px-16"
-            >
+            <div className="flex flex-col space-y-6 bg-gray-50 px-4 py-8 text-left sm:px-16">
               <div>
                 <label htmlFor="name" className="flex items-center space-x-2">
                   <p className="block text-sm font-medium text-gray-700">
@@ -134,7 +122,6 @@ export const ProjectCard = () => {
                     app.link.sh
                   </span>
                   <input
-                    id="name"
                     required
                     autoComplete="off"
                     pattern="[a-zA-Z0-9\-]+"
@@ -155,11 +142,11 @@ export const ProjectCard = () => {
               >
                 {isLoading ? "Creating..." : "Create Project"}
               </button>
-            </form>
+            </div>
             {error && <p className="text-red-500 mt-4">{error}</p>}
           </div>
         </div>
       </Modal>
-    </div>
+    </form>
   );
 };

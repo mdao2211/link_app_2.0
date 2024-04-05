@@ -11,14 +11,14 @@ type ProjectComponentData = {
   projectID: number;
   projectName: string;
   projectSlug: string;
-  totalLink: string;
-  totalClick: string;
+  totalLink: number;
+  totalClick: number;
 };
 
 export const ProjectComponent = ({ data }: { data: ProjectComponentData }) => {
   return (
     <div className="group relative">
-      <Link href="/auth/project_page">
+      <Link href={`/auth/project_page/${data.projectName}`}>
         <div className="relative flex flex-col justify-between rounded-lg border border-gray-100 bg-white p-6 shadow transition-all hover:shadow-lg">
           <div className="flex items-center space-x-3 mb-4">
             <img
@@ -45,13 +45,13 @@ export const ProjectComponent = ({ data }: { data: ProjectComponentData }) => {
             <div className="flex items-center space-x-1 text-gray-500">
               <Image src={linkIcon} alt={"LinkIcon"}></Image>
               <h2 className="whitespace-nowrap text-sm">
-                {data.totalLink} links
+                {data.totalLink || 0} links
               </h2>
             </div>
             <div className="flex items-center space-x-1 text-gray-500">
               <Image src={barIcon} alt={"BarIcon"}></Image>
               <h2 className="whitespace-nowrap text-sm">
-                {data.totalClick} clicks
+                {data.totalClick || 0} clicks
               </h2>
             </div>
           </div>

@@ -20,7 +20,7 @@ export const ProjectSelector = () => {
           <div className="h-0.5 bg-black"></div>
         </div>
       </a>
-      <a className="relative group" href="#">
+      <a className="relative group" href="/auth/project_page/settings">
         <div className="m-1 rounded-md px-3 py-2 transition-all duration-75 hover:bg-gray-100 active:bg-gray-200">
           <p className="text-sm text-gray-600 hover:text-black">Settings</p>
         </div>
