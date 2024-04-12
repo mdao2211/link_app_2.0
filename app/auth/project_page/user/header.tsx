@@ -1,6 +1,6 @@
 /* eslint-disable @next/next/no-img-element */
 "use client";
-import { useState, useRef, useEffect } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import Image from "next/image";
 import linkIcon from "@/public/link_icon.png";
 import slashLine from "@/icons/line-segment-svgrepo-com.svg";
@@ -13,18 +13,22 @@ import { SignOut } from "@/components/auth/log-out";
 import { cookies } from "next/headers";
 import { UpgradePopup } from "@/components/auth/projectpage/upgrade-popup";
 import { ProjectSelector } from "@/components/auth/projectpage/project-selector";
+import { apiCall } from "@/service/axios";
+import Link from "next/link";
 
 type UserData = {
   name?: string;
   email?: string;
 };
 
-export function UserHeader({ data }: { data: UserData }) {
+export default function UserHeader(props: any) {
+  const { data, getDetailProject } = props;
   // const [data, setData] = useState<Data | null>(null);
   const [isLoading, setLoading] = useState(true);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isPopupOpen, setIsPopupOpen] = useState(false);
   const [isProjectMenuOpen, setIsProjectMenuOpen] = useState(false);
+  const [projects, setProjects] = useState([]);
   const toggleMenu = () => {
     setIsMenuOpen(!isMenuOpen);
   };
@@ -42,7 +46,52 @@ export function UserHeader({ data }: { data: UserData }) {
   const toggleProjectMenu = () => {
     setIsProjectMenuOpen(!isProjectMenuOpen);
   };
+  const getData = async () => {
+    try {
+      const response = await apiCall(
+        "GET",
+        `http://localhost:8080/dashboard/get-project-list`,
+      );
 
+      setProjects(response);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+  useEffect(() => {
+    getData();
+  }, []);
+
+  const renderProject = () => {
+    return projects.map((item: any, index: number) => {
+      console.log(item);
+
+      return (
+        <div
+          key={index}
+          onClick={() => {
+            localStorage.setItem("projectDetail", JSON.stringify(item));
+          }}
+        >
+          <Link
+            href={`/auth/project_page/${item.projectID}`}
+            className="relative flex w-full items-center space-x-2 rounded-md px-2 py-1.5 hover:bg-gray-100 active:bg-gray-200  transition-all duration-75"
+          >
+            <img
+              width={20}
+              height={20}
+              src="https://avatar.vercel.sh/clt3tvyqy0000tcgx0lnncd4y"
+              className="blur-0 h-7 w-7 shrink-0 overflow-hidden rounded-full"
+              alt="avatar"
+            />
+            <span className="block truncate text-sm sm:max-w-[140px] font-normal">
+              {item.projectName}
+            </span>
+          </Link>
+        </div>
+      );
+    });
+  };
   return (
     <header className="sticky left-0 right-0 top-0 z-20 border-b border-gray-200 bg-gray-300">
       <div className="mx-auto w-full max-w-screen-xl px-2.5 lg:px-20">
@@ -78,7 +127,7 @@ export function UserHeader({ data }: { data: UserData }) {
 
               <div className="flex items-center space-x-3 sm:flex">
                 <span className="inline-block max-w-[100px] truncate text-sm font-medium sm:max-w-[200px]">
-                  LINK
+                  {getDetailProject.projectName}
                 </span>
                 <span className="max-w-fit rounded-full border px-2 py-px text-xs font-medium capitalize whitespace-nowrap border-black bg-black text-white">
                   Free
@@ -107,21 +156,7 @@ export function UserHeader({ data }: { data: UserData }) {
               >
                 <div className="relative mt-1 max-h-72 w-full space-y-0.5 overflow-auto rounded-md bg-white p-2 text-base sm:w-60 sm:text-sm sm:shadow-lg">
                   <div className="p-2 text-xs text-gray-500">My Projects</div>
-                  <a
-                    className="relative flex w-full items-center space-x-2 rounded-md px-2 py-1.5 hover:bg-gray-100 active:bg-gray-200  transition-all duration-75"
-                    href="/auth/project_page"
-                  >
-                    <img
-                      width={20}
-                      height={20}
-                      src="https://avatar.vercel.sh/clt3tvyqy0000tcgx0lnncd4y"
-                      className="blur-0 h-7 w-7 shrink-0 overflow-hidden rounded-full"
-                      alt="avatar"
-                    />
-                    <span className="block truncate text-sm sm:max-w-[140px] font-normal">
-                      LINK
-                    </span>
-                  </a>
+                  {renderProject()}
                   <button className="flex w-full cursor-pointer items-center space-x-2 rounded-md p-2 transition-all duration-75 hover:bg-gray-100">
                     <Image src={plusButton} alt={"plus button"} />
                     <span className="block truncate">
@@ -175,6 +210,14 @@ export function UserHeader({ data }: { data: UserData }) {
             </div>
           </div>
         </div>
+        {isPopupOpen && (
+          <div
+            className="fixed top-0 left-0 right-0 bottom-0 flex justify-center items-center z-50 bg-gray-100 bg-opacity-50 backdrop-blur-md"
+            onClick={handleOutsideClick}
+          >
+            <ProjectCard />
+          </div>
+        )}
         <ProjectSelector />
       </div>
     </header>

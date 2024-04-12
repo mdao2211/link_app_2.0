@@ -25,6 +25,7 @@ async function getData() {
 
 export default async function ProjectComponentShow() {
   const data = await getData();
+
   if (!data || data.length === 0) {
     // Xử lý trường hợp không có dự án nào được trả về từ API
     return <div>No projects found.</div>;

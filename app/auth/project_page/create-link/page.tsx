@@ -9,39 +9,60 @@ import { ChangeEvent, useState } from "react";
 import Image from "next/image";
 import GlobalIcon from "@/icons/global-svgrepo-com.svg";
 import { apiCall } from "@/service/axios";
+import axios from "axios";
 
-export function DialogDemo() {
+export function DialogDemo(props: any) {
   const [isCreateLinkOpen, setIsCreateLinkOpen] = useState(false);
+  const [longUrl, setLongUrl] = useState("");
+  const [shortUrl, setShortUrl] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   const toggleCreateLink = () => {
     setIsCreateLinkOpen(!isCreateLinkOpen);
   };
-  const [data, setData] = useState({
-    longUrl: "",
-    shortUrl: "",
-  });
+
+  const generateShortLink = async () => {
+    try {
+      const randomString = Math.random().toString(36).substring(2, 9);
+      setShortUrl(randomString);
+    } catch (error) {
+      console.error("Error generating short link:", error);
+    }
+  };
+
   const handleInputChange = (
     e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
   ) => {
-    setData((prevData) => ({
-      ...prevData,
-      [e.target.name]: e.target.value,
-    }));
-    getShortLink({ longUrl: e.target.value });
+    setLongUrl(e.target.value);
   };
-  const getShortLink = async (data: any) => {
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setIsLoading(true);
+    setError(null);
+    const data = {
+      long_url: longUrl,
+      projectID: props.getDetailProject.projectID,
+    };
     try {
+      await generateShortLink(); // Generate short link
       const response = await apiCall(
         "POST",
-        "`http://localhost:8080/{projectSlug}/create-short`",
+        "http://localhost:8080/{projectSlug}/create-short",
         data,
       );
+      if (response.ok) setIsLoading(false);
       console.log(response);
-    } catch {}
+    } catch (error) {
+      console.error("Error creating link:", error);
+      setError("Failed to create link. Please try again.");
+    } finally {
+      setIsCreateLinkOpen(false);
+      setIsLoading(false);
+    }
   };
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-  };
+
   return (
     <Dialog>
       <DialogTrigger asChild>
@@ -87,52 +108,40 @@ export function DialogDemo() {
                       className="p-2 border-gray-300 text-gray-900 placeholder-gray-300 focus:border-gray-500 focus:ring-gray-500 block w-full rounded-md focus:outline-none sm:text-sm"
                       aria-invalid="true"
                       type="url"
-                      value={data.longUrl}
-                      name="longUrl"
+                      value={longUrl}
                       onChange={handleInputChange}
+                      required
                     />
                   </div>
                 </div>
                 <div>
                   <div className="flex items-center justify-between">
                     <label
-                      htmlFor="url-51"
+                      htmlFor="short-url"
                       className="block text-sm font-medium text-gray-700"
                     >
                       Short Link
                     </label>
                   </div>
                   <div className="relative mt-1 flex rounded-md shadow-sm">
-                    {/* <select
-                      value={data.domain}
-                      required
-                      onChange={handleSelectChange}
-                      className="max-w-[16rem] rounded-l-md border border-r-0 border-gray-300 bg-gray-50 pl-4 pr-8 text-sm text-gray-500 focus:border-gray-300 focus:outline-none focus:ring-0"
-                    >
-                      <option value="dub.sh">dub.sh</option>
-                      <option value="link.st">link.st</option>
-                      <option value="spti.fi">spti.fi</option>
-                      <option value="git.new">git.new</option>
-                      <option value="amzn.id">amzn.id</option>
-                    </select> */}
                     <input
-                      id="url-51"
-                      placeholder="facebook"
+                      id="short-url"
+                      placeholder="Short link will be generated"
                       className="p-2 border-gray-300 text-gray-900 placeholder-gray-300 focus:border-gray-500 focus:ring-gray-500 block w-full rounded-md focus:outline-none sm:text-sm"
                       aria-invalid="true"
                       type="text"
-                      name="shortUrl"
+                      value={shortUrl}
                       disabled
-                      value={data.shortUrl}
                     />
                   </div>
                 </div>
                 <div className="py-8 transition-all">
                   <button
                     type="submit"
+                    disabled={isLoading}
                     className="group flex h-10 w-full items-center justify-center space-x-2 rounded-md border px-4 text-sm transition-all border-black bg-black text-white hover:bg-white hover:text-black"
                   >
-                    <p>Create link</p>
+                    {isLoading ? "Creating..." : "Create link"}
                   </button>
                 </div>
               </div>

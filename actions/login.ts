@@ -17,15 +17,15 @@ export const authOptions = {
           type: "text",
           placeholder: "Enter email",
         },
-        password: {
-          label: "Password",
-          type: "password",
-          placeholder: "Enter Password",
-        },
+        // password: {
+        //   label: "Password",
+        //   type: "password",
+        //   placeholder: "Enter Password",
+        // },
       },
 
       async authorize(credentials, req) {
-        const { email, password } = credentials;
+        const { email } = credentials;
         const res = await fetch("http://localhost:3000/api/login", {
           method: "POST",
           headers: {
@@ -33,7 +33,7 @@ export const authOptions = {
           },
           body: JSON.stringify({
             email,
-            password,
+            // password,
           }),
         });
         const user = await res.json();

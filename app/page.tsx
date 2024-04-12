@@ -9,6 +9,8 @@ import { LogoListHomepage } from "@/components/auth/homepage/logolist-homepage";
 import { InfomationHomepage } from "@/components/auth/homepage/infomation-homepage";
 import { GithubInfoHomepage } from "@/components/auth/homepage/githubinfo-homepage";
 import { FooterHomepage } from "@/components/auth/homepage/footer-homepage";
+import Contact from "@/components/auth/homepage/contact";
+import EarthCanvas from "@/components/dynamic-effects/Earth";
 export default function HomePage() {
   const [authenticated, setAuthenticated] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -29,8 +31,12 @@ export default function HomePage() {
         <InfomationHomepage />
         {/* GITHUBINFO  */}
         <GithubInfoHomepage />
+        {/* CONTACT */}
+        {/* <Contact /> */}
+        {/* EARTH  */}
+        {/* <EarthCanvas /> */}
         {/* FOOTER  */}
-        <FooterHomepage />\{" "}
+        <FooterHomepage />
       </div>
       {logoutMessage && <div>{logoutMessage}</div>}
     </div>

@@ -13,7 +13,7 @@ import Image from "next/image";
 import GlobalIcon from "@/icons/global-svgrepo-com.svg";
 import qrCodeIcon from "@/icons/qr-code-scan-svgrepo-com.svg";
 import trashIcon from "@/icons/trash-svgrepo-com.svg";
-export function DeleteProject(props: any) {
+export function DeleteAccount(props: any) {
   const [isCreateLinkOpen, setIsCreateLinkOpen] = useState(false);
   const { handleDelete, onChange } = props;
   const toggleCreateLink = () => {
@@ -28,7 +28,7 @@ export function DeleteProject(props: any) {
             type="button"
             className="group flex h-10 w-full items-center justify-center space-x-2 rounded-md border px-4 text-sm transition-all border-red-500 bg-red-500 text-white hover:bg-white hover:text-red-500"
           >
-            <p className="">Delete Project</p>
+            <p className="">Delete Account</p>
           </button>
         </div>
       </DialogTrigger>
@@ -46,10 +46,10 @@ export function DeleteProject(props: any) {
                 className="blur-0 h-8 w-8 rounded-full sm:h-10 sm:w-10"
                 src="https://www.google.com/s2/favicons?sz=64&amp;domain_url=dub.sh"
               />
-              <h3 className="text-lg font-medium">Delete project</h3>
+              <h3 className="text-lg font-medium">Delete account</h3>
               <p className="text-sm text-gray-500">
-                Warning: This will permanently delete your project, custom
-                domain, and all associated links and their respective stats.
+                Warning: This will permanently delete your account, all your
+                workspaces, and all your short links.
               </p>
             </div>
             <form
@@ -59,13 +59,13 @@ export function DeleteProject(props: any) {
               <div>
                 <label htmlFor="verify" className="block text-sm text-gray-700">
                   To verify, type{" "}
-                  <span className="font-semibold">confirm delete project</span>{" "}
+                  <span className="font-semibold">confirm delete account</span>{" "}
                   below
                 </label>
                 <div className="relative mt-1 rounded-md shadow-sm">
                   <input
                     id="verify"
-                    pattern="confirm delete project"
+                    pattern="confirm delete account"
                     autoComplete="off"
                     className="block py-2 w-full rounded-md border-gray-300 text-gray-900 placeholder-gray-300 focus:border-gray-500 focus:outline-none focus:ring-gray-500 sm:text-sm"
                     type="text"
@@ -79,7 +79,7 @@ export function DeleteProject(props: any) {
                 type="submit"
                 className="group flex h-10 w-full items-center justify-center space-x-2 rounded-md border px-4 text-sm transition-all border-red-500 bg-red-500 text-white hover:bg-white hover:text-red-500"
               >
-                <p>Confirm delete project</p>
+                <p>Confirm delete account</p>
               </button>
             </form>
           </div>

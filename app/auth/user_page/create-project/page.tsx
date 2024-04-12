@@ -47,7 +47,8 @@ export const ProjectCard = () => {
       setError("Something went wrong. Please try again.");
     } finally {
       setIsLoading(false);
-      location.reload();
+      setModalShown(false);
+      // location.reload();
     }
   };
 

@@ -1,5 +1,5 @@
 /* eslint-disable @next/next/no-img-element */
-import { Button } from "@/components/ui/button";
+// import { Button } from "@/components/ui/button";
 import {
   Dialog,
   DialogContent,
@@ -11,30 +11,84 @@ import {
 import { useState } from "react";
 import Image from "next/image";
 import trashIcon from "@/icons/trash-svgrepo-com.svg";
-export function DeleteLink() {
+import { apiCall } from "@/service/axios";
+import {
+  Dropdown,
+  DropdownTrigger,
+  DropdownMenu,
+  DropdownItem,
+  Button,
+  Modal,
+  ModalContent,
+} from "@nextui-org/react";
+import dotsMenu from "@/icons/interface-ui-dots-menu-svgrepo-com.svg";
+export function DeleteLink(props: any) {
+  const { open, close, data, getListLink } = props;
   const [isCreateLinkOpen, setIsCreateLinkOpen] = useState(false);
 
   const toggleCreateLink = () => {
     setIsCreateLinkOpen(!isCreateLinkOpen);
   };
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    const newData = {
+      projectID: data.projectID.projectID,
+      shortUrl: data.shortUrl,
+    };
+    console.log(newData);
 
+    try {
+      const response = await apiCall(
+        "DELETE",
+        "http://localhost:8080/{projectSlug}/delete-url",
+        newData,
+      );
+      console.log(response);
+
+      // setIsCreateLinkOpen(false); // Close dialog after successful submission
+    } catch (error) {
+      console.error("Error creating link:", error);
+    } finally {
+      getListLink();
+      setIsCreateLinkOpen(false);
+    }
+  };
   return (
-    <Dialog>
-      <DialogTrigger asChild>
-        <div>
-          <button
-            type="button"
-            className="group flex w-full items-center justify-center space-x-2 rounded-md border text-sm transition-all border-transparent bg-white text-red-500 hover:bg-red-600 hover:text-white h-9 px-2 font-medium"
+    <>
+      <Dropdown>
+        <DropdownTrigger>
+          <Image src={dotsMenu} alt={dotsMenu}></Image>
+        </DropdownTrigger>
+        <DropdownMenu aria-label="Static Actions">
+          <DropdownItem
+            key="delete"
+            onClick={toggleCreateLink}
+            className="text-danger"
+            color="danger"
           >
-            <Image src={trashIcon} alt={trashIcon}></Image>
-            <p className="flex-1 text-left">Delete</p>
-          </button>
-        </div>
-      </DialogTrigger>
-      <DialogContent className="sm:max-w-[425px]">
-        <DialogHeader>
+            <div
+              onClick={toggleCreateLink}
+              className="group bg-white border border-black flex w-full items-center justify-center space-x-2 rounded-md  text-sm transition-all h-9 px-2 font-medium"
+            >
+              <Image src={trashIcon} alt={trashIcon}></Image>
+              <p className="flex-1 text-left">Delete</p>
+            </div>
+          </DropdownItem>
+        </DropdownMenu>
+      </Dropdown>
+      <Modal
+        // backdrop={"opaque"}
+        placement={"center"}
+        isOpen={isCreateLinkOpen}
+        onOpenChange={toggleCreateLink}
+        classNames={{
+          backdrop:
+            "animate-fade-in fixed inset-0 z-40 bg-gray-100 bg-opacity-50 backdrop-blur-md ",
+        }}
+      >
+        <ModalContent>
           <div>
-            <div className="flex flex-col items-center justify-center space-y-3 border-b border-gray-200 px-4 py-4 pt-8 text-center sm:px-16">
+            <div className="flex rounded-md bg-white flex-col items-center justify-center space-y-3 border-b border-gray-200 px-4 py-4 pt-8 text-center sm:px-16 ">
               <img
                 alt="dub.sh"
                 loading="lazy"
@@ -45,25 +99,28 @@ export function DeleteLink() {
                 className="blur-0 h-8 w-8 rounded-full sm:h-10 sm:w-10"
                 src="https://www.google.com/s2/favicons?sz=64&amp;domain_url=dub.sh"
               />
-              <h3 className="text-lg font-medium">Delete dub.sh/g8qqW6k</h3>
+              <h3 className="text-lg font-medium">Delete link</h3>
               <p className="text-sm text-gray-500">
                 Warning: Deleting this link will remove all of its stats. This
                 action cannot be undone.
               </p>
             </div>
-            <form className="flex flex-col space-y-3 bg-gray-50 px-4 py-8 text-left sm:px-16">
+            <form
+              onSubmit={handleSubmit}
+              className="flex flex-col space-y-3 bg-gray-50 px-4 py-8 text-left sm:px-16"
+            >
               <div>
                 <label
                   htmlFor="verification"
                   className="block text-sm text-gray-700"
                 >
                   To verify, type{" "}
-                  <span className="font-semibold">dub.sh/g8qqW6k</span> below
+                  <span className="font-semibold">delete link</span> below
                 </label>
                 <div className="relative mt-1 rounded-md shadow-sm">
                   <input
                     id="verification"
-                    pattern="dub.sh/g8qqW6k"
+                    pattern="delete link"
                     autoComplete="off"
                     className="block py-2 w-full rounded-md border-gray-300 text-gray-900 placeholder-gray-300 focus:border-gray-500 focus:outline-none focus:ring-gray-500 sm:text-sm"
                     type="text"
@@ -79,8 +136,8 @@ export function DeleteLink() {
               </button>
             </form>
           </div>
-        </DialogHeader>
-      </DialogContent>
-    </Dialog>
+        </ModalContent>
+      </Modal>
+    </>
   );
 }

@@ -16,9 +16,13 @@ type ProjectComponentData = {
 };
 
 export const ProjectComponent = ({ data }: { data: ProjectComponentData }) => {
+  const handleClick = () => {
+    localStorage.setItem("projectDetail", JSON.stringify(data));
+  };
   return (
-    <div className="group relative">
-      <Link href={`/auth/project_page/${data.projectName}`}>
+    <div className="group relative" onClick={handleClick}>
+      <Link href={`/auth/project_page/${data.projectID}`}>
+        {/* <Link href={`/auth/project_page`}> */}
         <div className="relative flex flex-col justify-between rounded-lg border border-gray-100 bg-white p-6 shadow transition-all hover:shadow-lg">
           <div className="flex items-center space-x-3 mb-4">
             <img

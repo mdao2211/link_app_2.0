@@ -6,15 +6,14 @@ import { revalidatePath } from "next/cache";
 export async function createDataProject(formData: FormData) {
   try {
     const rawFormData = {
-      name: formData.get("projectName"),
-      slug: formData.get("projectSlug"),
-      totalClick: Number(formData.get("totalClick")),
-      totalLink: Number(formData.get("totalLink")),
+      longUrl: formData.get("longUrl"),
+      destinationUrl: formData.get("destinationUrl"),
+      shortLink: formData.get("shortUrl"),
     };
     console.log("Data: ");
     console.log(rawFormData);
     const response = await fetch(
-      `http://localhost:8080/dashboard/create-project`,
+      `http://localhost:8080/{projectSlug}/create-short`,
       {
         method: "POST",
         headers: {
@@ -26,7 +25,7 @@ export async function createDataProject(formData: FormData) {
     );
     if (response.ok) {
       const data = await response.json();
-      revalidatePath("/auth/user_page");
+      // revalidatePath("/auth/project_page/{projectID}");
       return data;
     }
   } catch (error) {

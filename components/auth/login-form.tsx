@@ -20,17 +20,21 @@ import { FormSuccess } from "@/components/form-success";
 // import {login} from "@/actions/login";
 import { useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
-import React from "react";
+import React, { ChangeEvent } from "react";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import { apiCall } from "@/service/axios";
+
 export const LoginForm = () => {
   const [error, setError] = useState<string | undefined>();
   const [success, setSuccess] = useState<string | undefined>();
   const [isPending, startTransition] = useTransition();
   const router = useRouter();
-
-  const notify = () => {
-    toast.error("Invalid request!", {
+  const [data, setData] = useState({
+    email: "",
+  });
+  const notify = (text: any) => {
+    toast.error(text, {
       position: "top-center",
       autoClose: 5000,
       hideProgressBar: false,
@@ -42,8 +46,8 @@ export const LoginForm = () => {
     });
   };
 
-  const success_notification = () => {
-    toast.success("Login successfully!", {
+  const success_notification = (text: any) => {
+    toast.success(text, {
       position: "top-center",
       autoClose: 5000,
       hideProgressBar: false,
@@ -78,6 +82,29 @@ export const LoginForm = () => {
   //     });
   //   });
   // };
+  const handleChange = (
+    e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
+  ) => {
+    setData({ ...data, [e.target.name]: e.target.value });
+  };
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+
+    try {
+      const response = await apiCall(
+        "POST",
+        "http://localhost:8080/auth/login",
+        data,
+        { "Content-Type": "application/json" },
+      );
+      console.log(response, "response");
+    } catch (error) {
+      console.error("Error creating link:", error);
+    }
+    // finally {
+    //   location.replace("/auth/user_page");
+    // }
+  };
 
   return (
     <CardWrapper
@@ -88,7 +115,7 @@ export const LoginForm = () => {
     >
       {/* onSubmit={form.handleSubmit(onSubmit)} */}
       <Form {...form}>
-        <form className="space-y-6">
+        <form onSubmit={handleSubmit} className="space-y-6">
           <div className="space-y-4">
             <FormField
               control={form.control}
@@ -102,6 +129,10 @@ export const LoginForm = () => {
                       disabled={isPending}
                       placeholder="manhdao@gmail.com"
                       type="email"
+                      name="email"
+                      required
+                      onChange={handleChange}
+                      value={data.email}
                     />
                   </FormControl>
                   <FormMessage />

@@ -11,6 +11,8 @@ import { ProjectCard } from "@/app/auth/user_page/create-project/page";
 import { ProjectComponent } from "@/app/auth/user_page/project/project-component";
 import { SignOut } from "@/components/auth/log-out";
 import { cookies } from "next/headers";
+import Link from "next/link";
+import { apiCall } from "@/service/axios";
 
 type UserData = {
   name?: string;
@@ -23,6 +25,7 @@ export function UserHeader({ data }: { data: UserData }) {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isPopupOpen, setIsPopupOpen] = useState(false);
   const [isProjectMenuOpen, setIsProjectMenuOpen] = useState(false);
+  const [projects, setProjects] = useState([]);
   const toggleMenu = () => {
     setIsMenuOpen(!isMenuOpen);
   };
@@ -40,7 +43,52 @@ export function UserHeader({ data }: { data: UserData }) {
   const toggleProjectMenu = () => {
     setIsProjectMenuOpen(!isProjectMenuOpen);
   };
+  const getData = async () => {
+    try {
+      const response = await apiCall(
+        "GET",
+        `http://localhost:8080/dashboard/get-project-list`,
+      );
 
+      setProjects(response);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+  useEffect(() => {
+    getData();
+  }, []);
+
+  const renderProject = () => {
+    return projects.map((item: any, index: number) => {
+      console.log(item);
+
+      return (
+        <div
+          key={index}
+          onClick={() => {
+            localStorage.setItem("projectDetail", JSON.stringify(item));
+          }}
+        >
+          <Link
+            href={`/auth/project_page/${item.projectID}`}
+            className="relative flex w-full items-center space-x-2 rounded-md px-2 py-1.5 hover:bg-gray-100 active:bg-gray-200  transition-all duration-75"
+          >
+            <img
+              width={20}
+              height={20}
+              src="https://avatar.vercel.sh/clt3tvyqy0000tcgx0lnncd4y"
+              className="blur-0 h-7 w-7 shrink-0 overflow-hidden rounded-full"
+              alt="avatar"
+            />
+            <span className="block truncate text-sm sm:max-w-[140px] font-normal">
+              {item.projectName}
+            </span>
+          </Link>
+        </div>
+      );
+    });
+  };
   return (
     <header className="sticky left-0 right-0 top-0 z-20 border-b border-gray-200 bg-gray-300">
       <div className="mx-auto w-full max-w-screen-xl px-2.5 lg:px-20">
@@ -98,21 +146,7 @@ export function UserHeader({ data }: { data: UserData }) {
               >
                 <div className="relative mt-1 max-h-72 w-full space-y-0.5 overflow-auto rounded-md bg-white p-2 text-base sm:w-60 sm:text-sm sm:shadow-lg">
                   <div className="p-2 text-xs text-gray-500">My Projects</div>
-                  <a
-                    className="relative flex w-full items-center space-x-2 rounded-md px-2 py-1.5 hover:bg-gray-100 active:bg-gray-200  transition-all duration-75"
-                    href="/auth/project_page"
-                  >
-                    <img
-                      width={20}
-                      height={20}
-                      src="https://avatar.vercel.sh/clt3tvyqy0000tcgx0lnncd4y"
-                      className="blur-0 h-7 w-7 shrink-0 overflow-hidden rounded-full"
-                      alt="avatar"
-                    />
-                    <span className="block truncate text-sm sm:max-w-[140px] font-normal">
-                      LINK
-                    </span>
-                  </a>
+                  {renderProject()}
                   <button className="flex w-full cursor-pointer items-center space-x-2 rounded-md p-2 transition-all duration-75 hover:bg-gray-100">
                     <Image src={plusButton} alt={"plus button"} />
                     <span className="block truncate">
