@@ -1,6 +1,7 @@
 "use client";
 import {
   Dialog,
+  DialogClose,
   DialogContent,
   DialogHeader,
   DialogTrigger,
@@ -26,6 +27,7 @@ export function DialogDemo(props: any) {
     try {
       const randomString = Math.random().toString(36).substring(2, 9);
       setShortUrl(randomString);
+     
     } catch (error) {
       console.error("Error generating short link:", error);
     }
@@ -42,7 +44,7 @@ export function DialogDemo(props: any) {
     setIsLoading(true);
     setError(null);
     const data = {
-      long_url: longUrl,
+      longUrl: longUrl,
       projectID: props.getDetailProject.projectID,
     };
     try {
@@ -52,7 +54,9 @@ export function DialogDemo(props: any) {
         "http://localhost:8080/{projectSlug}/create-short",
         data,
       );
-      if (response.ok) setIsLoading(false);
+      setIsLoading(false);
+      setIsCreateLinkOpen(false);
+      props.setReloadData(shortUrl);
       console.log(response);
     } catch (error) {
       console.error("Error creating link:", error);
@@ -136,13 +140,15 @@ export function DialogDemo(props: any) {
                   </div>
                 </div>
                 <div className="py-8 transition-all">
-                  <button
-                    type="submit"
-                    disabled={isLoading}
-                    className="group flex h-10 w-full items-center justify-center space-x-2 rounded-md border px-4 text-sm transition-all border-black bg-black text-white hover:bg-white hover:text-black"
-                  >
-                    {isLoading ? "Creating..." : "Create link"}
-                  </button>
+                  <DialogClose asChild>
+                    <button
+                      type="submit"
+                      disabled={isLoading}
+                      className="group flex h-10 w-full items-center justify-center space-x-2 rounded-md border px-4 text-sm transition-all border-black bg-black text-white hover:bg-white hover:text-black"
+                    >
+                      {isLoading ? "Creating..." : "Create link"}
+                    </button>
+                  </DialogClose>
                 </div>
               </div>
             </form>

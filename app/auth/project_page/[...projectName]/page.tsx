@@ -11,7 +11,7 @@ const AuthLayout = ({ children }: { children: React.ReactNode }) => {
       {/* HEADER  */}
       <UserProjectPage />
       {/* LINK  */}
-      <div className="pt-12 flex h-36 items-center border-b border-gray-200 bg-white">
+      <div className=" flex h-36 items-center border-b border-gray-200 bg-white">
         <div className="mx-auto w-full max-w-screen-xl px-2.5 lg:px-20">
           <div className="flex items-center justify-between">
             <h1 className="text-2xl text-gray-600">Links</h1>
@@ -21,7 +21,9 @@ const AuthLayout = ({ children }: { children: React.ReactNode }) => {
         </div>
       </div>
       {/* LIST  */}
-      <MenuList />
+      <div>
+        <MenuList />
+      </div>
     </div>
   );
 };

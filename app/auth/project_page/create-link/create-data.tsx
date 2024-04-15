@@ -7,7 +7,7 @@ export async function createDataProject(formData: FormData) {
   try {
     const rawFormData = {
       longUrl: formData.get("longUrl"),
-      destinationUrl: formData.get("destinationUrl"),
+      // destinationUrl: formData.get("destinationUrl"),
       shortLink: formData.get("shortUrl"),
     };
     console.log("Data: ");

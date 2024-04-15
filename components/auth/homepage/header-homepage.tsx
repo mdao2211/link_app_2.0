@@ -10,7 +10,7 @@ interface HeaderHomepageProps {
 
 export const HeaderHomepage = ({ authenticated }: HeaderHomepageProps) => {
   return (
-    <header className="fixed inset-x-0 top-0 z-[9999] py-1 w-full transition-all bg-gray-300">
+    <header className="fixed inset-x-0 top-0 z-[9999] py-1 w-full transition-all bg-gray-200">
       <div className="buttonHidden">
         <button className="fixed right-3 top-3 z-[9999] rounded-full p-2 transition-colors duration-200 hover:bg-gray-200 focus:outline-none active:bg-gray-300 lg:hidden">
           <svg

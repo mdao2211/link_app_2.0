@@ -33,7 +33,7 @@ export function DialogDemo() {
     try {
       const response = await apiCall(
         "POST",
-        "`http://localhost:8080/{projectSlug}/create-short`",
+        "http://localhost:8080/{projectSlug}/create-short",
         data,
       );
       console.log(response);

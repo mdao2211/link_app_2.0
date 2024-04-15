@@ -15,7 +15,7 @@ import qrCodeIcon from "@/icons/qr-code-scan-svgrepo-com.svg";
 import trashIcon from "@/icons/trash-svgrepo-com.svg";
 export function DeleteAccount(props: any) {
   const [isCreateLinkOpen, setIsCreateLinkOpen] = useState(false);
-  const { handleDelete, onChange } = props;
+  const { handleDelete } = props;
   const toggleCreateLink = () => {
     setIsCreateLinkOpen(!isCreateLinkOpen);
   };
@@ -70,7 +70,6 @@ export function DeleteAccount(props: any) {
                     className="block py-2 w-full rounded-md border-gray-300 text-gray-900 placeholder-gray-300 focus:border-gray-500 focus:outline-none focus:ring-gray-500 sm:text-sm"
                     type="text"
                     name="verify"
-                    onChange={onChange}
                     required
                   />
                 </div>

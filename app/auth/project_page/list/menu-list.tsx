@@ -1,7 +1,7 @@
 /* eslint-disable @next/next/no-img-element */
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React, { ChangeEvent, useEffect, useState } from "react";
 import Image from "next/image";
 import arrowDown from "@/icons/arrow-down-wide-short-svgrepo-com.svg";
 import acceptCheckMark from "@/icons/accept-checklist-checkmark-svgrepo-com.svg";
@@ -20,6 +20,8 @@ export function MenuList(props: any) {
   const [data, setData] = useState([]);
   const [isSortMenuOpen, setIsSortMenuOpen] = useState(false);
   const [isProjectMenuBarOpen, setIsProjectMenuBarOpen] = useState(false);
+  const [sortBy, setSortBy] = useState(0);
+  const [search, setSearch] = useState("");
   const toggleSortMenu = () => {
     setIsSortMenuOpen(!isSortMenuOpen);
   };
@@ -37,12 +39,49 @@ export function MenuList(props: any) {
       setData(res);
     } catch {}
   };
+  const sortListLinkByDate = async () => {
+    try {
+      const res = await apiCall(
+        "GET",
+        `http://localhost:8080/{projectSlug}/sort-by-total-click-url?projectID=${props.getDetailProject.projectID}`,
+      );
+      console.log(res);
+      setSortBy(1);
+      setData(res);
+    } catch {}
+  };
+  const sortListLinkByClicks = async () => {
+    try {
+      const res = await apiCall(
+        "GET",
+        `http://localhost:8080/{projectSlug}/sort-by-create-date?projectID=${props.getDetailProject.projectID}`,
+      );
+      console.log(res);
+      setSortBy(2);
+      setData(res);
+    } catch {}
+  };
+  const searchListLink = async (
+    e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
+  ) => {
+    setSearch(e.target.value);
+    try {
+      const res = await apiCall(
+        "GET",
+        `http://localhost:8080/{projectSlug}/search?search=${e.target.value}`,
+      );
+      console.log(res);
+
+      setData(res);
+    } catch {}
+  };
   useEffect(() => {
     getListLink();
-  }, []);
+    console.log(props.reloadData);
+  }, [props.reloadData]);
   return (
-    <div className="relative mx-auto w-full max-w-screen-xl px-2.5 lg:px-20 flex flex-col space-y-3 py-3">
-      <div className="flex h-10 w-full justify-center lg:justify-end">
+    <div className="relative mx-auto w-full max-w-screen-xl px-2.5 lg:px-20 flex flex-col">
+      <div className="flex h-10 w-full justify-center lg:justify-end  my-2">
         <button
           className="sm:inline-flex flex w-48 items-center justify-between space-x-2 rounded-md bg-white px-3 py-2.5 shadow transition-all duration-75 hover:shadow-md"
           type="button"
@@ -63,8 +102,9 @@ export function MenuList(props: any) {
           <input
             className="peer h-12 w-full rounded-md border border-gray-300 px-10 text-black placeholder:text-gray-400 focus:border-black focus:ring-0 sm:text-sm"
             placeholder="Search..."
-            type="text"
-            value=""
+            name="search"
+            value={search}
+            onChange={searchListLink}
           ></input>
         </div>
       </div>
@@ -82,10 +122,12 @@ export function MenuList(props: any) {
                     <Image src={searchIcon} alt={searchIcon}></Image>
                   </div>
                   <input
+                    onChange={searchListLink}
                     className="peer h-12 w-full rounded-md border border-gray-300 px-10 text-black placeholder:text-gray-400 focus:border-black focus:ring-0 sm:text-sm"
                     placeholder="Search..."
                     type="text"
-                    value=""
+                    name="search"
+                    value={search}
                   ></input>
                 </div>
               </div>
@@ -172,13 +214,14 @@ export function MenuList(props: any) {
           </div>
         </div>
         {/* LINK COMPONENT  */}
-        <div className="col-span-1 auto-rows-min grid-cols-1 lg:col-span-5 max-h-[calc(100vh-150px)]   overflow-auto">
+        <div className="col-span-1 auto-rows-min grid-cols-1 lg:col-span-5 max-h-[calc(100vh-200px)]   overflow-auto">
           {data.map((item, index) => {
             return (
               <>
                 <LinkComponent
                   getListLink={getListLink}
                   key={index}
+                  setReloadData={props.setReloadData}
                   // data={{
                   //   destinationUrl: "",
                   //   shortLink: "",
@@ -204,29 +247,39 @@ export function MenuList(props: any) {
           }}
         >
           <div className="w-full p-2 md:w-48">
-            <button className="flex w-full items-center justify-between space-x-2 rounded-md px-1 py-2 hover:bg-gray-100 active:bg-gray-200">
+            <button
+              onClick={sortListLinkByDate}
+              className="flex w-full items-center justify-between space-x-2 rounded-md px-1 py-2 hover:bg-gray-100 active:bg-gray-200"
+            >
               <div className="flex items-center justify-start space-x-2">
                 <Image src={arrowDown} alt="arrowDown" width={20} height={20} />
                 <p className="text-sm">Date Added</p>
               </div>
-              <Image
-                src={acceptCheckMark}
-                alt="acceptCheckMark"
-                width={20}
-                height={20}
-              />
+              {sortBy === 1 && (
+                <Image
+                  src={acceptCheckMark}
+                  alt="acceptCheckMark"
+                  width={20}
+                  height={20}
+                />
+              )}
             </button>
-            <button className="flex w-full items-center justify-between space-x-2 rounded-md px-1 py-2 hover:bg-gray-100 active:bg-gray-200">
+            <button
+              onClick={sortListLinkByClicks}
+              className="flex w-full items-center justify-between space-x-2 rounded-md px-1 py-2 hover:bg-gray-100 active:bg-gray-200"
+            >
               <div className="flex items-center justify-start space-x-2">
                 <Image src={arrowDown} alt="arrowDown" width={20} height={20} />
                 <p className="text-sm">Number Clicks</p>
               </div>
-              <Image
-                src={acceptCheckMark}
-                alt="acceptCheckMark"
-                width={20}
-                height={20}
-              />
+              {sortBy === 2 && (
+                <Image
+                  src={acceptCheckMark}
+                  alt="acceptCheckMark"
+                  width={20}
+                  height={20}
+                />
+              )}
             </button>
           </div>
         </div>

@@ -13,6 +13,8 @@ import { SignOut } from "@/components/auth/log-out";
 import { cookies } from "next/headers";
 import Link from "next/link";
 import { apiCall } from "@/service/axios";
+import { DeleteAccount } from "@/components/auth/projectpage/delete-account";
+import { handleSignOut } from "@/actions/auth";
 
 type UserData = {
   name?: string;
@@ -51,6 +53,23 @@ export function UserHeader({ data }: { data: UserData }) {
       );
 
       setProjects(response);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+  const handleDeleteAccount = async () => {
+    try {
+      const response = await apiCall(
+        "DELETE",
+        `http://localhost:8080/delete-profile`,
+        {
+          verify: "confirm delete account",
+        },
+      );
+      if (response) {
+        handleSignOut();
+      }
+      console.log(response);
     } catch (error) {
       console.log(error);
     }
@@ -193,15 +212,13 @@ export function UserHeader({ data }: { data: UserData }) {
                       {data?.email}
                     </p>
                   </a>
-                  <a
-                    className="block w-full rounded-md p-2 text-sm transition-all duration-75 hover:bg-gray-100 active:bg-gray-200"
-                    href="/auth/project_page/settings"
-                  >
+                  <button className="block w-full rounded-md p-2 text-sm transition-all duration-75 hover:bg-gray-100 active:bg-gray-200">
                     <div className="flex items-center justify-start space-x-2">
                       <Image src={settingIcon} alt={settingIcon}></Image>
                       <p className="text-sm">Settings</p>
                     </div>
-                  </a>
+                  </button>
+                  <DeleteAccount handleDelete={handleDeleteAccount} />
                   <div className="py-1">
                     <SignOut />
                   </div>

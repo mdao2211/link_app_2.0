@@ -10,6 +10,7 @@ import {
 } from "@/components/ui/dialog";
 import { useState } from "react";
 import Image from "next/image";
+import settingIcon from "@/icons/settings-svgrepo-com.svg";
 import trashIcon from "@/icons/trash-svgrepo-com.svg";
 import { apiCall } from "@/service/axios";
 import {
@@ -22,6 +23,9 @@ import {
   ModalContent,
 } from "@nextui-org/react";
 import dotsMenu from "@/icons/interface-ui-dots-menu-svgrepo-com.svg";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import EditLinkModal from "./edit-link";
 export function DeleteLink(props: any) {
   const { open, close, data, getListLink } = props;
   const [isCreateLinkOpen, setIsCreateLinkOpen] = useState(false);
@@ -29,6 +33,25 @@ export function DeleteLink(props: any) {
   const toggleCreateLink = () => {
     setIsCreateLinkOpen(!isCreateLinkOpen);
   };
+  const [isEditLinkOpen, setIsEditLinkOpen] = useState(false);
+
+  const toggleEditLink = () => {
+    setIsEditLinkOpen(!isEditLinkOpen);
+  };
+
+  const handleDelete = () => {
+    toast.success("Delete successful!", {
+      position: "bottom-right",
+      autoClose: 5000,
+      hideProgressBar: false,
+      closeOnClick: true,
+      pauseOnHover: true,
+      draggable: true,
+      progress: undefined,
+      theme: "light",
+    });
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     const newData = {
@@ -43,8 +66,17 @@ export function DeleteLink(props: any) {
         "http://localhost:8080/{projectSlug}/delete-url",
         newData,
       );
-      console.log(response);
-
+      toast.success("Delete successful!", {
+        position: "bottom-right",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "light",
+      });
+      props.setReloadData(data.shortUrl);
       // setIsCreateLinkOpen(false); // Close dialog after successful submission
     } catch (error) {
       console.error("Error creating link:", error);
@@ -60,6 +92,20 @@ export function DeleteLink(props: any) {
           <Image src={dotsMenu} alt={dotsMenu}></Image>
         </DropdownTrigger>
         <DropdownMenu aria-label="Static Actions">
+          <DropdownItem
+            key="Edit"
+            onClick={toggleEditLink}
+            className="text-danger"
+            color="danger"
+          >
+            <div
+              onClick={toggleEditLink}
+              className="group bg-white border border-black flex w-full items-center justify-center space-x-2 rounded-md  text-sm transition-all h-9 px-2 font-medium"
+            >
+              <Image src={settingIcon} alt={settingIcon}></Image>
+              <p className="flex-1 text-left">Edit</p>
+            </div>
+          </DropdownItem>
           <DropdownItem
             key="delete"
             onClick={toggleCreateLink}
@@ -77,7 +123,7 @@ export function DeleteLink(props: any) {
         </DropdownMenu>
       </Dropdown>
       <Modal
-        // backdrop={"opaque"}
+        backdrop={"opaque"}
         placement={"center"}
         isOpen={isCreateLinkOpen}
         onOpenChange={toggleCreateLink}
@@ -125,12 +171,14 @@ export function DeleteLink(props: any) {
                     className="block py-2 w-full rounded-md border-gray-300 text-gray-900 placeholder-gray-300 focus:border-gray-500 focus:outline-none focus:ring-gray-500 sm:text-sm"
                     type="text"
                     name="verification"
+                    required
                   />
                 </div>
               </div>
               <button
                 type="submit"
                 className="group flex h-10 w-full items-center justify-center space-x-2 rounded-md border px-4 text-sm transition-all border-red-500 bg-red-500 text-white hover:bg-white hover:text-red-500"
+                // onSubmit={handleDelete}
               >
                 <p>Confirm delete</p>
               </button>
@@ -138,6 +186,15 @@ export function DeleteLink(props: any) {
           </div>
         </ModalContent>
       </Modal>
+      {isEditLinkOpen && (
+        <EditLinkModal
+          setReloadData={props.setReloadData}
+          linkDetail={data}
+          isOpen={isEditLinkOpen}
+          onOpenChange={toggleEditLink}
+        />
+      )}
+      {/* <ToastContainer /> */}
     </>
   );
 }

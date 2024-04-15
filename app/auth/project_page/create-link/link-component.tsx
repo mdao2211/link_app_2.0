@@ -6,7 +6,9 @@ import menuIcon from "@/icons/menu-alt-2-svgrepo-com.svg";
 import { useState } from "react";
 import { DeleteLink } from "@/components/auth/projectpage/delete-link";
 import { EditPopup } from "@/components/auth/projectpage/edit-popup";
-
+import copy from "clipboard-copy"; // Import hàm copy từ clipboard-copy
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 // type LinkComponentData = {
 //   destinationUrl: string;
 //   shortLink: string;
@@ -20,6 +22,26 @@ export function LinkComponent(props: any) {
 
   const toggleMenuBar = () => {
     setIsProjectMenuBarOpen(!isProjectMenuBarOpen);
+  };
+
+  const handleCopy = () => {
+    // Tạo đường link cần sao chép
+    const linkToCopy = `localhost:8080/public/${data?.shortUrl}`;
+    // Sao chép đường link vào clipboard
+    copy(linkToCopy);
+    toast.success("Copy successful!", {
+      position: "bottom-right",
+      autoClose: 5000,
+      hideProgressBar: false,
+      closeOnClick: true,
+      pauseOnHover: true,
+      draggable: true,
+      progress: undefined,
+      theme: "light",
+    });
+
+    // Thông báo khi đã sao chép thành công
+    console.log(`Link đã được sao chép vào clipboard: ${linkToCopy}`);
   };
 
   return (
@@ -44,13 +66,16 @@ export function LinkComponent(props: any) {
                 <div className="flex max-w-fit flex-wrap items-center gap-x-2">
                   <a
                     className="max-w-[140px] truncate text-sm font-semibold text-blue-800 sm:max-w-[300px] sm:text-base md:max-w-[360px] xl:max-w-[500px]"
-                    href={data?.longUrl}
+                    href={`http://localhost:8080/public/${data?.shortUrl}`}
                     target="_blank"
                     rel="noreferrer"
                   >
                     link.sh/{data?.shortUrl}
                   </a>
-                  <button className="group rounded-full bg-gray-100 p-1.5 transition-all duration-75 hover:scale-105 hover:bg-blue-100 active:scale-95">
+                  <button
+                    className="group rounded-full bg-gray-100 p-1.5 transition-all duration-75 hover:scale-105 hover:bg-blue-100 active:scale-95"
+                    onClick={handleCopy}
+                  >
                     <span className="sr-only">Copy</span>
                     <svg
                       fill="none"
@@ -108,6 +133,7 @@ export function LinkComponent(props: any) {
                 onClick={toggleMenuBar}
               >
                 <DeleteLink
+                  setReloadData={props.setReloadData}
                   data={data}
                   getListLink={getListLink}
                   open={isProjectMenuBarOpen}
