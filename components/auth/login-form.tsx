@@ -1,110 +1,174 @@
-"use client"
+"use client";
 
-import { CardWrapper } from "@/components/auth/card-wrapper"
-import {useForm} from "react-hook-form" 
-import { zodResolver } from "@hookform/resolvers/zod"
-import { LoginSchema } from "@/schemas"
-import * as z from "zod"
-import {Input} from "@/components/ui/input"
-import {Button} from "@/components/ui/button"
+import { CardWrapper } from "@/components/auth/card-wrapper";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { LoginSchema } from "@/schemas";
+import * as z from "zod";
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
 import {
-    Form,
-    FormControl,
-    FormField,
-    FormItem,
-    FormLabel,
-    FormMessage
-} from "@/components/ui/form"
-import { FormError } from "@/components/form-error"
-import { FormSuccess } from "@/components/form-success"
-import { login }  from "@/actions/login"
-import { useState, useTransition } from "react"
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
+import { FormError } from "@/components/form-error";
+import { FormSuccess } from "@/components/form-success";
+// import {login} from "@/actions/login";
+import { useState, useTransition } from "react";
+import { useRouter } from "next/navigation";
+import React, { ChangeEvent } from "react";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import { apiCall } from "@/service/axios";
+import { signIn } from "@/auth";
+import { handleSignIn } from "@/actions/auth";
+import LoadingPage from "../ui/loadingPage";
+
 export const LoginForm = () => {
-    const [error, setError] = useState<string | undefined> ("")
-    const [success, setSuccess] = useState<string | undefined> ("")
-    const [isPending, startTransition]  = useTransition();
+  const [error, setError] = useState<string | undefined>();
+  const [success, setSuccess] = useState<string | undefined>();
+  const [loading, setLoading] = useState(false);
+  const [isPending, startTransition] = useTransition();
+  const router = useRouter();
+  const [data, setData] = useState({
+    email: "",
+  });
+  const notify = (text: any) => {
+    toast.error(text, {
+      position: "top-center",
+      autoClose: 5000,
+      hideProgressBar: false,
+      closeOnClick: true,
+      pauseOnHover: true,
+      draggable: true,
+      progress: undefined,
+      theme: "light",
+    });
+  };
 
-    const form = useForm<z.infer<typeof LoginSchema>>({
-        resolver: zodResolver(LoginSchema),
-        defaultValues: {
-            email: "",
-            password: "",
-        }
-    })
+  const success_notification = (text: any) => {
+    toast.success(text, {
+      position: "top-center",
+      autoClose: 5000,
+      hideProgressBar: false,
+      closeOnClick: true,
+      pauseOnHover: true,
+      draggable: true,
+      progress: undefined,
+      theme: "light",
+    });
+  };
 
-    const onSubmit = (values: z.infer<typeof LoginSchema>) => {
-        setError("")
-        setSuccess("")
+  const form = useForm<z.infer<typeof LoginSchema>>({
+    resolver: zodResolver(LoginSchema),
+    defaultValues: {
+      email: "",
+      // password: "",
+    },
+  });
 
-        startTransition(() => {
-            login(values)
-            .then((data) => {
-                setError(data.error);
-                setSuccess(data.success)
-            })
-        })
+  // const onSubmit = (values: z.infer<typeof LoginSchema>) => {
+  //   startTransition(() => {
+  //     login(values).then((data: { error: string; success: string }) => {
+  //       if (data && data.error) {
+  //         setError(data.error as string);
+  //         if ("success" in data) {
+  //           setSuccess(data.success as string);
+  //           success_notification();
+  //         }
+  //       } else {
+  //         router.push("/auth/user_page");
+  //       }
+  //     });
+  //   });
+  // };
+  const handleChange = (
+    e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
+  ) => {
+    setData({ ...data, [e.target.name]: e.target.value });
+  };
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setLoading(true);
+    try {
+      const response = await apiCall(
+        "POST",
+        "http://localhost:8080/auth/login",
+        data,
+        { "Content-Type": "application/json" },
+      );
+      const confirmToken = await apiCall(
+        "GET",
+        `http://localhost:8080/auth/confirm?token=${response.token}`,
+        undefined,
+        { "Content-Type": "application/json" },
+      );
+      await handleSignIn(confirmToken.token as string);
+      setLoading(false);
+    } catch (error) {
+      setLoading(false);
+      // console.error("Error creating link:", error);
     }
+    // finally {
+    //   location.replace("/auth/user_page");
+    // }
+  };
 
-    return(
-        <CardWrapper
+  return (
+    <div style={{ position: "relative" }}>
+      {loading && <LoadingPage />}
+      <CardWrapper
         headerLabel="Welcome back"
         backButtonLabel="Don't have an account? Register here!"
         backButtonHref="/auth/register"
-        showSocial>
+        showSocial
+      >
+        {/* onSubmit={form.handleSubmit(onSubmit)} */}
         <Form {...form}>
-        <form 
-        onSubmit={form.handleSubmit(onSubmit)}
-        className="space-y-6"
-        >
+          <form onSubmit={handleSubmit} className="space-y-6">
             <div className="space-y-4">
-                <FormField
-                 control={form.control}
-                 name="email"   
-                 render={({ field }) => (
-                    <FormItem>
-                        <FormLabel>Email</FormLabel>
-                        <FormControl>
-                            <Input
-                                {...field}
-                                disabled={isPending}
-                                placeholder="manhdao@gmail.com"
-                                type="email"
-                            />
-                        </FormControl>
-                        <FormMessage />
-                    </FormItem>
-                 )}
-                />
-                <FormField
-                 control={form.control}
-                 name="password"   
-                 render={({ field }) => (
-                    <FormItem>
-                        <FormLabel>Password</FormLabel>
-                        <FormControl>
-                            <Input
-                                {...field}
-                                disabled={isPending}
-                                placeholder="******"
-                                type="password"
-                            />
-                        </FormControl>
-                        <FormMessage />
-                    </FormItem>
-                 )}
-                />
+              <FormField
+                control={form.control}
+                name="email"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Email</FormLabel>
+                    <FormControl>
+                      <Input
+                        {...field}
+                        disabled={isPending}
+                        placeholder="manhdao@gmail.com"
+                        type="email"
+                        name="email"
+                        required
+                        onChange={handleChange}
+                        value={data.email}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
             </div>
-            <FormError message={error}/>
-            <FormSuccess message={success}/>
+            <FormError message={error} />
+            <FormSuccess message={success} />
 
             <Button
-            disabled={isPending}
-            type="submit"
-            className="w-full">
-                    Login
+              disabled={isPending}
+              // onClick={success_notification}
+              type="submit"
+              className="w-full"
+            >
+              Login
             </Button>
-        </form>
+            <ToastContainer />
+          </form>
         </Form>
-        </CardWrapper>
-    )
-}
+      </CardWrapper>
+    </div>
+  );
+};

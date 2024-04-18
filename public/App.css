@@ -1,0 +1,12 @@
+canvas {
+  height: 175vh !important;
+  width: 125vh;
+}
+
+body {
+  /* background: #050815; */
+}
+
+.Earth {
+  background: #050815;
+}

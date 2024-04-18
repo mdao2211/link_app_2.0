@@ -1,129 +1,94 @@
-"use client"
+"use client";
 
-import { CardWrapper } from "@/components/auth/card-wrapper"
-import {useForm} from "react-hook-form" 
-import { zodResolver } from "@hookform/resolvers/zod"
-import { RegisterSchema } from "@/schemas"
-import * as z from "zod"
-import {Input} from "@/components/ui/input"
-import {Button} from "@/components/ui/button"
+import { CardWrapper } from "@/components/auth/card-wrapper";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { RegisterSchema } from "@/schemas";
+import * as z from "zod";
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
 import {
-    Form,
-    FormControl,
-    FormField,
-    FormItem,
-    FormLabel,
-    FormMessage
-} from "@/components/ui/form"
-import { FormError } from "@/components/form-error"
-import { FormSuccess } from "@/components/form-success"
-import { register }  from "@/actions/register"
-import { useState, useTransition } from "react"
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
+import { FormError } from "@/components/form-error";
+import { FormSuccess } from "@/components/form-success";
+import { register } from "@/actions/register";
+import { ChangeEvent, useState, useTransition } from "react";
+import React from "react";
+import toast, { Toaster } from "react-hot-toast";
+import { apiCall } from "@/service/axios";
+
 export const RegisterForm = () => {
-    const [error, setError] = useState<string | undefined> ("")
-    const [success, setSuccess] = useState<string | undefined> ("")
-    const [isPending, startTransition]  = useTransition();
+  const [error, setError] = useState<string | undefined>("");
+  const [success, setSuccess] = useState<string | undefined>("");
+  const [isPending, startTransition] = useTransition();
 
-    const form = useForm<z.infer<typeof RegisterSchema>>({
-        resolver: zodResolver(RegisterSchema),
-        defaultValues: {
-            email: "",
-            password: "",
-            name: "",
-        }
-    })
+  type Inputs = {
+    name: string;
+    email: string;
+  };
+  const [data, setData] = useState({
+    email: "",
+    name: "",
+  });
+  const form = useForm<Inputs>({
+    resolver: zodResolver(RegisterSchema),
+    defaultValues: {
+      name: "",
+      email: "",
+    },
+  });
 
-    const onSubmit = (values: z.infer<typeof RegisterSchema>) => {
-        setError("")
-        setSuccess("")
+  const onSubmit = async (values: Inputs) => {
+    setError("");
+    setSuccess("");
 
-        startTransition(() => {
-            register(values)
-            .then((data) => {
-                setError(data.error);
-                setSuccess(data.success)
-            })
-        })
+    startTransition(() => {
+      register(values).then((data) => {
+        setError(data.error);
+        setSuccess(data.success);
+      });
+    });
+  };
+  const handleChange = (
+    e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
+  ) => {
+    setData({ ...data, [e.target.name]: e.target.value });
+  };
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+
+    try {
+      const response = await apiCall(
+        "POST",
+        "http://localhost:8080/auth/signin",
+        data,
+        { "Content-Type": "application/json" },
+      );
+      console.log(response, "response");
+    } catch (error) {
+      console.error("Error :", error);
+    } finally {
+      location.replace("/auth/login");
     }
-
-    return(
-        <CardWrapper
-        headerLabel="Create an account"
-        backButtonLabel="Already have an account? Sign in now."
-        backButtonHref="/auth/login"
-        showSocial>
-        <Form {...form}>
-        <form 
-        onSubmit={form.handleSubmit(onSubmit)}
-        className="space-y-6"
-        >
-            <div className="space-y-4">
-            <FormField
-                 control={form.control}
-                 name="name"   
-                 render={({ field }) => (
-                    <FormItem>
-                        <FormLabel>Name</FormLabel>
-                        <FormControl>
-                            <Input
-                                {...field}
-                                disabled={isPending}
-                                placeholder="Manh Dao"
-                                type="name"
-                            />
-                        </FormControl>
-                        <FormMessage />
-                    </FormItem>
-                 )}
-                />
-                <FormField
-                 control={form.control}
-                 name="email"   
-                 render={({ field }) => (
-                    <FormItem>
-                        <FormLabel>Email</FormLabel>
-                        <FormControl>
-                            <Input
-                                {...field}
-                                disabled={isPending}
-                                placeholder="manhdao@gmail.com"
-                                type="email"
-                            />
-                        </FormControl>
-                        <FormMessage />
-                    </FormItem>
-                 )}
-                />
-                <FormField
-                 control={form.control}
-                 name="password"   
-                 render={({ field }) => (
-                    <FormItem>
-                        <FormLabel>Password</FormLabel>
-                        <FormControl>
-                            <Input
-                                {...field}
-                                disabled={isPending}
-                                placeholder="******"
-                                type="password"
-                            />
-                        </FormControl>
-                        <FormMessage />
-                    </FormItem>
-                 )}
-                />
-            </div>
-            <FormError message={error}/>
-            <FormSuccess message={success}/>
-
-            <Button
-            disabled={isPending}
-            type="submit"
-            className="w-full">
-                    Create an account
-            </Button>
+  };
+  return (
+    <CardWrapper
+      headerLabel="Create an account"
+      backButtonLabel="Already have an account? Sign in now."
+      backButtonHref="/auth/login"
+      showSocial
+    >
+      <Form {...form}>
+        <form onSubmit={handleSubmit} className="space-y-6">
+          <div className="space-y-4"></div>
         </form>
-        </Form>
-        </CardWrapper>
-    )
-}
+      </Form>
+    </CardWrapper>
+  );
+};
