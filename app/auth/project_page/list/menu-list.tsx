@@ -20,7 +20,7 @@ export function MenuList(props: any) {
   const [data, setData] = useState([]);
   const [isSortMenuOpen, setIsSortMenuOpen] = useState(false);
   const [isProjectMenuBarOpen, setIsProjectMenuBarOpen] = useState(false);
-  const [sortBy, setSortBy] = useState(0);
+  const [sortBy, setSortBy] = useState("");
   const [search, setSearch] = useState("");
   const toggleSortMenu = () => {
     setIsSortMenuOpen(!isSortMenuOpen);
@@ -46,7 +46,7 @@ export function MenuList(props: any) {
         `http://localhost:8080/{projectSlug}/sort-by-total-click-url?projectID=${props.getDetailProject.projectID}`,
       );
       console.log(res);
-      setSortBy(1);
+      setSortBy("Date Added");
       setData(res);
     } catch {}
   };
@@ -57,7 +57,7 @@ export function MenuList(props: any) {
         `http://localhost:8080/{projectSlug}/sort-by-create-date?projectID=${props.getDetailProject.projectID}`,
       );
       console.log(res);
-      setSortBy(2);
+      setSortBy("Number Clicks");
       setData(res);
     } catch {}
   };
@@ -132,7 +132,7 @@ export function MenuList(props: any) {
                 </div>
               </div>
             </div>
-            <fieldset className="overflow-hidden py-6">
+            {/* <fieldset className="overflow-hidden py-6">
               <div className="flex h-8 items-center justify-between">
                 <div className="flex items-center space-x-2">
                   <h4 className="font-medium text-gray-900">Domains</h4>
@@ -210,7 +210,7 @@ export function MenuList(props: any) {
                   </label>
                 </div>
               </div>
-            </fieldset>
+            </fieldset> */}
           </div>
         </div>
         {/* LINK COMPONENT  */}
@@ -255,7 +255,7 @@ export function MenuList(props: any) {
                 <Image src={arrowDown} alt="arrowDown" width={20} height={20} />
                 <p className="text-sm">Date Added</p>
               </div>
-              {sortBy === 1 && (
+              {sortBy === "Date Added" && (
                 <Image
                   src={acceptCheckMark}
                   alt="acceptCheckMark"
@@ -272,7 +272,7 @@ export function MenuList(props: any) {
                 <Image src={arrowDown} alt="arrowDown" width={20} height={20} />
                 <p className="text-sm">Number Clicks</p>
               </div>
-              {sortBy === 2 && (
+              {sortBy === "Number Clicks" && (
                 <Image
                   src={acceptCheckMark}
                   alt="acceptCheckMark"

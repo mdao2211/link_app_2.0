@@ -7,7 +7,7 @@ import { ChangeEvent, useState } from "react";
 import Modal from "@/app/closeModal";
 import { createDataProject } from "./create-data";
 
-export const ProjectCard = () => {
+export const ProjectCard = (props: any) => {
   const [modalShown, setModalShown] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [formData, setFormData] = useState({
@@ -42,6 +42,7 @@ export const ProjectCard = () => {
       const response = await createDataProject(formDataToSend);
       if (response.ok) setIsLoading(false);
       console.log(response);
+      props.getData();
     } catch (error) {
       console.log(error);
       setError("Something went wrong. Please try again.");

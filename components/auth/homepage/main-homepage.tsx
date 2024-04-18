@@ -22,18 +22,7 @@ export const MainHomepage = () => {
         </span>
       </h1>
       <h2 className="mt-5 text-gray-600 sm:text-xl">
-        <TypeAnimation
-          sequence={[
-            // Same substring at the start will only be typed out once, initially
-            "LINK is the open-source link management infrastructure for modern marketing teams.",
-            500,
-            "LINK is an useful project to have shorten links with high performance.",
-            500,
-          ]}
-          wrapper="span"
-          speed={50}
-          repeat={Infinity}
-        />
+        LINK is an useful project to have shorten links with high performance.
       </h2>
 
       <div className="main__buttons mx-auto mt-5 flex max-w-fit space-x-4">

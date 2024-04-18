@@ -13,6 +13,7 @@ import StarsCanvas from "@/components/dynamic-effects/Stars";
 import FadeIn from "react-fade-in";
 
 import EarthCanvas from "@/components/dynamic-effects/Earth";
+import { ToastContainer } from "react-toastify";
 export default function HomePage() {
   const [authenticated, setAuthenticated] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -59,6 +60,7 @@ export default function HomePage() {
         </FadeIn>
       </div>
       {logoutMessage && <div>{logoutMessage}</div>}
+      <ToastContainer />
     </div>
   );
 }

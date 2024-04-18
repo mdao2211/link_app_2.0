@@ -44,6 +44,10 @@ export function LinkComponent(props: any) {
     console.log(`Link đã được sao chép vào clipboard: ${linkToCopy}`);
   };
 
+  // if (!data || data.length === 0) {
+  //   // Xử lý trường hợp không có dự án nào được trả về từ API
+  //   return <div>No links found.</div>;
+  // }
   return (
     // <div className="col-span-1 auto-rows-min grid-cols-1 lg:col-span-5">
     <>
@@ -70,7 +74,7 @@ export function LinkComponent(props: any) {
                     target="_blank"
                     rel="noreferrer"
                   >
-                    link.sh/{data?.shortUrl}
+                    localhost:8080/public/{data?.shortUrl}
                   </a>
                   <button
                     className="group rounded-full bg-gray-100 p-1.5 transition-all duration-75 hover:scale-105 hover:bg-blue-100 active:scale-95"
@@ -106,13 +110,8 @@ export function LinkComponent(props: any) {
                   <p className="whitespace-nowrap text-sm text-gray-500">
                     {data?.creationDate}
                   </p>
+
                   <p className="xs:block hidden">•</p>
-                  <a
-                    href="https://dub.sh/EXbDcUN"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="xs:block hidden max-w-[140px] truncate text-sm font-medium text-gray-700 underline-offset-2 hover:underline sm:max-w-[300px] md:max-w-[360px] xl:max-w-[420px]"
-                  ></a>
                 </div>
               </div>
             </div>

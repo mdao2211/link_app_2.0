@@ -27,28 +27,29 @@ export function DialogDemo(props: any) {
     try {
       const randomString = Math.random().toString(36).substring(2, 9);
       setShortUrl(randomString);
-     
     } catch (error) {
       console.error("Error generating short link:", error);
     }
   };
 
-  const handleInputChange = (
+  const handleInputChange = async (
     e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
   ) => {
     setLongUrl(e.target.value);
+    await generateShortLink();
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
     setError(null);
+
     const data = {
       longUrl: longUrl,
       projectID: props.getDetailProject.projectID,
     };
     try {
-      await generateShortLink(); // Generate short link
+      // Generate short link
       const response = await apiCall(
         "POST",
         "http://localhost:8080/{projectSlug}/create-short",
@@ -56,8 +57,12 @@ export function DialogDemo(props: any) {
       );
       setIsLoading(false);
       setIsCreateLinkOpen(false);
-      props.setReloadData(shortUrl);
-      console.log(response);
+      setTimeout(() => {
+        props.setReloadData(new Date());
+      });
+      console.error("response", response);
+      setLongUrl("");
+      setShortUrl("");
     } catch (error) {
       console.error("Error creating link:", error);
       setError("Failed to create link. Please try again.");

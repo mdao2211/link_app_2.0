@@ -25,7 +25,7 @@ export async function createDataProject(formData: FormData) {
     );
     if (response.ok) {
       const data = await response.json();
-      // revalidatePath("/auth/project_page/{projectID}");
+      // revalidatePath("/auth/project_page/${data.projectID}");
       return data;
     }
   } catch (error) {

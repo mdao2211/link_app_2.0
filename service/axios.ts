@@ -1,4 +1,6 @@
 "use server";
+import { handleSignOut } from "@/actions/auth";
+import { signOut } from "@/auth";
 import { cookies } from "next/headers";
 
 // ./app/auth/user_page/create-project/create-data.tsx
@@ -21,11 +23,14 @@ export async function apiCall(
         body: JSON.stringify(body),
       },
     );
+    if (url === "http://localhost:8080/delete-profile" && response.ok) {
+      
+      return true;
+    }
     const data = await response.json();
-    console.log(data);
 
+    console.log(data);
     if (response.ok) {
-      console.log(data);
       return data;
     }
     if (data.success) {

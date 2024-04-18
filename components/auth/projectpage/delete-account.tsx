@@ -1,5 +1,4 @@
 /* eslint-disable @next/next/no-img-element */
-import { Button } from "@/components/ui/button";
 import {
   Dialog,
   DialogContent,
@@ -9,10 +8,7 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { useState } from "react";
-import Image from "next/image";
-import GlobalIcon from "@/icons/global-svgrepo-com.svg";
-import qrCodeIcon from "@/icons/qr-code-scan-svgrepo-com.svg";
-import trashIcon from "@/icons/trash-svgrepo-com.svg";
+
 export function DeleteAccount(props: any) {
   const [isCreateLinkOpen, setIsCreateLinkOpen] = useState(false);
   const { handleDelete } = props;

@@ -32,7 +32,7 @@ export const config = {
               Authorization: `Bearer ${credentials.token}`,
             },
           });
-
+          console.log(rawRes, "rawRes.json()");
           if (!rawRes.ok) {
             console.log(await rawRes.json());
             return null;

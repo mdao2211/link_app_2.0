@@ -76,7 +76,7 @@ export function DeleteLink(props: any) {
         progress: undefined,
         theme: "light",
       });
-      props.setReloadData(data.shortUrl);
+      props.setReloadData(new Date());
       // setIsCreateLinkOpen(false); // Close dialog after successful submission
     } catch (error) {
       console.error("Error creating link:", error);
@@ -87,11 +87,14 @@ export function DeleteLink(props: any) {
   };
   return (
     <>
-      <Dropdown>
+      <Dropdown className="animate-slide-up-fade z-50 items-center rounded-lg border border-gray-200 bg-white drop-shadow-lg sm:block">
         <DropdownTrigger>
           <Image src={dotsMenu} alt={dotsMenu}></Image>
         </DropdownTrigger>
-        <DropdownMenu aria-label="Static Actions">
+        <DropdownMenu
+          aria-label="Static Actions"
+          className="grid w-full gap-px p-2 sm:w-48"
+        >
           <DropdownItem
             key="Edit"
             onClick={toggleEditLink}
@@ -100,7 +103,7 @@ export function DeleteLink(props: any) {
           >
             <div
               onClick={toggleEditLink}
-              className="group bg-white border border-black flex w-full items-center justify-center space-x-2 rounded-md  text-sm transition-all h-9 px-2 font-medium"
+              className="group flex w-full items-center justify-center space-x-2 rounded-md border text-sm transition-all border-transparent text-gray-500 duration-75 hover:bg-gray-100 h-9 px-2 font-medium"
             >
               <Image src={settingIcon} alt={settingIcon}></Image>
               <p className="flex-1 text-left">Edit</p>
@@ -114,10 +117,10 @@ export function DeleteLink(props: any) {
           >
             <div
               onClick={toggleCreateLink}
-              className="group bg-white border border-black flex w-full items-center justify-center space-x-2 rounded-md  text-sm transition-all h-9 px-2 font-medium"
+              className="group flex w-full items-center justify-center space-x-2 rounded-md border text-sm transition-all border-transparent text-gray-500 duration-75 hover:bg-gray-100 h-9 px-2 font-medium"
             >
               <Image src={trashIcon} alt={trashIcon}></Image>
-              <p className="flex-1 text-left">Delete</p>
+              <p className="flex-1 text-left text-red-500">Delete</p>
             </div>
           </DropdownItem>
         </DropdownMenu>

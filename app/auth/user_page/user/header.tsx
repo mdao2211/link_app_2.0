@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/rules-of-hooks */
 /* eslint-disable @next/next/no-img-element */
 "use client";
 import { useState, useRef, useEffect } from "react";
@@ -57,22 +58,23 @@ export function UserHeader({ data }: { data: UserData }) {
       console.log(error);
     }
   };
-  const handleDeleteAccount = async () => {
+  const handleDeleteAccount = async (e: React.FormEvent) => {
+    e.preventDefault();
+
     try {
       const response = await apiCall(
         "DELETE",
-        `http://localhost:8080/delete-profile`,
+        "http://localhost:8080/delete-profile",
         {
           verify: "confirm delete account",
         },
       );
       if (response) {
-        handleSignOut();
+        await handleSignOut();
       }
-      console.log(response);
     } catch (error) {
       console.log(error);
-    }
+    } 
   };
   useEffect(() => {
     getData();
@@ -212,12 +214,12 @@ export function UserHeader({ data }: { data: UserData }) {
                       {data?.email}
                     </p>
                   </a>
-                  <button className="block w-full rounded-md p-2 text-sm transition-all duration-75 hover:bg-gray-100 active:bg-gray-200">
+                  {/* <button className="block w-full rounded-md p-2 text-sm transition-all duration-75 hover:bg-gray-100 active:bg-gray-200">
                     <div className="flex items-center justify-start space-x-2">
                       <Image src={settingIcon} alt={settingIcon}></Image>
                       <p className="text-sm">Settings</p>
                     </div>
-                  </button>
+                  </button> */}
                   <DeleteAccount handleDelete={handleDeleteAccount} />
                   <div className="py-1">
                     <SignOut />

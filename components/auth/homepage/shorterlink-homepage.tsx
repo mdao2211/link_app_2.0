@@ -1,11 +1,37 @@
 import { apiCall } from "@/service/axios";
 import { useState } from "react";
-
+import copy from "clipboard-copy"; // Import hàm copy từ clipboard-copy
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 /* eslint-disable @next/next/no-img-element */
 export const ShorterLinkHomepage = () => {
-  const [data, setData] = useState([]);
+  const [data, setData] = useState([
+    {
+      longUrl: "https://codelearn.io/",
+      shortUrl: "Uj1PMQ",
+    },
+  ]);
   const [shortUrl, setShortUrl] = useState("");
   const [longUrl, setLongUrl] = useState("");
+  const handleCopy = (pathname: string) => {
+    // Tạo đường link cần sao chép
+    const linkToCopy = `localhost:8080/public/${pathname}`;
+    // Sao chép đường link vào clipboard
+    copy(linkToCopy);
+    toast.success("Copy successful!", {
+      position: "bottom-right",
+      autoClose: 5000,
+      hideProgressBar: false,
+      closeOnClick: true,
+      pauseOnHover: true,
+      draggable: true,
+      progress: undefined,
+      theme: "light",
+    });
+
+    // Thông báo khi đã sao chép thành công
+    console.log(`Link đã được sao chép vào clipboard: ${linkToCopy}`);
+  };
   const generateShortLink = async () => {
     try {
       const randomString = Math.random().toString(36).substring(2, 9);
@@ -14,21 +40,35 @@ export const ShorterLinkHomepage = () => {
       console.error("Error generating short link:", error);
     }
   };
-  const getShortLink = async () => {
+  const getShortLink = async (e: React.FormEvent) => {
+    e.preventDefault();
     try {
       await generateShortLink();
       const response = await apiCall(
         "POST",
-        `http://localhost:8080/public/${shortUrl}`,
+        `http://localhost:8080/public/guest-create-url`,
+        { longUrl: longUrl },
       );
-      setData(response);
-      console.log(response);
+      if (response) {
+        setData([...data, response]);
+      } else {
+        toast.error("Error", {
+          position: "bottom-right",
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "light",
+        });
+      }
     } catch (error) {
       console.log(error);
     }
   };
   const renderListShortLink = () => {
-    data.map((item, index) => {
+    return data.map((item: any, index) => {
       return (
         <li key={index} style={{ opacity: 1, transform: "none" }}>
           <div
@@ -43,7 +83,7 @@ export const ShorterLinkHomepage = () => {
           >
             <div className="flex items-center space-x-3">
               <img
-                src="https://banner2.cleanpng.com/20201008/rtv/transparent-google-suite-icon-google-icon-5f7f985ccd60e3.5687494416021975968412.jpg"
+                src="https://th.bing.com/th/id/OIP.Wgcgym1BWK_vsb7zEk9mzwHaHa?rs=1&pid=ImgDetMain"
                 alt="google.logo"
                 width={20}
                 height={20}
@@ -57,13 +97,18 @@ export const ShorterLinkHomepage = () => {
                 <div className="flex items-center space-x-1 sm:space-x-2">
                   <a
                     className="font-semibold text-blue-800"
-                    href={`http://localhost:8080/public/${shortUrl}`}
+                    href={`http://localhost:8080/public/${item.shortUrl}`}
                     target="_blank"
                     rel="noreferrer"
                   >
-                    link.sh/{shortUrl}
+                    http://localhost:8080/public/{item.shortUrl}
                   </a>
-                  <button className="group rounded-full bg-gray-100 p-1.5 transition-all duration-75 hover:scale-105 hover:bg-blue-100 active:scale-95">
+                  <button
+                    onClick={() => {
+                      handleCopy(item.shortUrl);
+                    }}
+                    className="group rounded-full bg-gray-100 p-1.5 transition-all duration-75 hover:scale-105 hover:bg-blue-100 active:scale-95"
+                  >
                     <span className="sr-only">Copy</span>
                     <svg
                       fill="none"
@@ -83,12 +128,12 @@ export const ShorterLinkHomepage = () => {
                 </div>
                 <div className="flex flex-col">
                   <a
-                    href="https://www.google.com.vn/?hl=vi"
+                    href={item.longUrl}
                     target="_blank"
                     rel="noopener noreferrer"
                     className="line-clamp-1 w-72 text-sm text-gray-500 underline-offset-2 transition-all hover:text-gray-800 hover:underline"
                   >
-                    https://www.google.com.vn/?hl=vi
+                    {item.longUrl}
                   </a>
                 </div>
               </div>
@@ -153,8 +198,9 @@ export const ShorterLinkHomepage = () => {
       </form>
 
       <ul className="mt-3 grid gap-2">
+        {renderListShortLink()}
         <li style={{ opacity: 1, transform: "none" }}>
-          <div
+          {/* <div
             style={{
               transform: "none",
               userSelect: "none",
@@ -184,7 +230,7 @@ export const ShorterLinkHomepage = () => {
                     target="_blank"
                     rel="noreferrer"
                   >
-                    link.sh/google
+                    localhost:8080/public/google
                   </a>
                   <button className="group rounded-full bg-gray-100 p-1.5 transition-all duration-75 hover:scale-105 hover:bg-blue-100 active:scale-95">
                     <span className="sr-only">Copy</span>
@@ -216,7 +262,7 @@ export const ShorterLinkHomepage = () => {
                 </div>
               </div>
             </div>
-          </div>
+          </div> */}
         </li>
         <li
           className="flex items-center rounded-md border border-gray-200 bg-white p-3 shadow-lg"

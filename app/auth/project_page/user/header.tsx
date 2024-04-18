@@ -31,6 +31,7 @@ export default function UserHeader(props: any) {
   const [isPopupOpen, setIsPopupOpen] = useState(false);
   const [isProjectMenuOpen, setIsProjectMenuOpen] = useState(false);
   const [projects, setProjects] = useState([]);
+
   const toggleMenu = () => {
     setIsMenuOpen(!isMenuOpen);
   };
@@ -56,23 +57,26 @@ export default function UserHeader(props: any) {
       );
 
       setProjects(response);
+      setIsPopupOpen(false);
     } catch (error) {
       console.log(error);
     }
   };
-  const handleDeleteAccount = async () => {
+
+  const handleDeleteAccount = async (e: React.FormEvent) => {
+    e.preventDefault();
+
     try {
       const response = await apiCall(
         "DELETE",
-        `http://localhost:8080/delete-profile`,
+        "http://localhost:8080/delete-profile",
         {
           verify: "confirm delete account",
         },
       );
       if (response) {
-        handleSignOut();
+        await handleSignOut();
       }
-      console.log(response);
     } catch (error) {
       console.log(error);
     }
@@ -212,12 +216,7 @@ export default function UserHeader(props: any) {
                       {data.email}
                     </p>
                   </a>
-                  <button className="block w-full rounded-md p-2 text-sm transition-all duration-75 hover:bg-gray-100 active:bg-gray-200">
-                    <div className="flex items-center justify-start space-x-2">
-                      <Image src={settingIcon} alt={settingIcon}></Image>
-                      <p className="text-sm">Settings</p>
-                    </div>
-                  </button>
+
                   <DeleteAccount handleDelete={handleDeleteAccount} />
                   <div className="py-1">
                     <SignOut />
@@ -232,7 +231,7 @@ export default function UserHeader(props: any) {
             className="fixed top-0 left-0 right-0 bottom-0 flex justify-center items-center z-50 bg-gray-100 bg-opacity-50 backdrop-blur-md"
             onClick={handleOutsideClick}
           >
-            <ProjectCard />
+            <ProjectCard getData={getData} />
           </div>
         )}
         <ProjectSelector />

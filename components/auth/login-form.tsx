@@ -24,10 +24,14 @@ import React, { ChangeEvent } from "react";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { apiCall } from "@/service/axios";
+import { signIn } from "@/auth";
+import { handleSignIn } from "@/actions/auth";
+import LoadingPage from "../ui/loadingPage";
 
 export const LoginForm = () => {
   const [error, setError] = useState<string | undefined>();
   const [success, setSuccess] = useState<string | undefined>();
+  const [loading, setLoading] = useState(false);
   const [isPending, startTransition] = useTransition();
   const router = useRouter();
   const [data, setData] = useState({
@@ -89,7 +93,7 @@ export const LoginForm = () => {
   };
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-
+    setLoading(true);
     try {
       const response = await apiCall(
         "POST",
@@ -97,9 +101,17 @@ export const LoginForm = () => {
         data,
         { "Content-Type": "application/json" },
       );
-      console.log(response, "response");
+      const confirmToken = await apiCall(
+        "GET",
+        `http://localhost:8080/auth/confirm?token=${response.token}`,
+        undefined,
+        { "Content-Type": "application/json" },
+      );
+      await handleSignIn(confirmToken.token as string);
+      setLoading(false);
     } catch (error) {
-      console.error("Error creating link:", error);
+      setLoading(false);
+      // console.error("Error creating link:", error);
     }
     // finally {
     //   location.replace("/auth/user_page");
@@ -107,53 +119,56 @@ export const LoginForm = () => {
   };
 
   return (
-    <CardWrapper
-      headerLabel="Welcome back"
-      backButtonLabel="Don't have an account? Register here!"
-      backButtonHref="/auth/register"
-      showSocial
-    >
-      {/* onSubmit={form.handleSubmit(onSubmit)} */}
-      <Form {...form}>
-        <form onSubmit={handleSubmit} className="space-y-6">
-          <div className="space-y-4">
-            <FormField
-              control={form.control}
-              name="email"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Email</FormLabel>
-                  <FormControl>
-                    <Input
-                      {...field}
-                      disabled={isPending}
-                      placeholder="manhdao@gmail.com"
-                      type="email"
-                      name="email"
-                      required
-                      onChange={handleChange}
-                      value={data.email}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-          </div>
-          <FormError message={error} />
-          <FormSuccess message={success} />
+    <div style={{ position: "relative" }}>
+      {loading && <LoadingPage />}
+      <CardWrapper
+        headerLabel="Welcome back"
+        backButtonLabel="Don't have an account? Register here!"
+        backButtonHref="/auth/register"
+        showSocial
+      >
+        {/* onSubmit={form.handleSubmit(onSubmit)} */}
+        <Form {...form}>
+          <form onSubmit={handleSubmit} className="space-y-6">
+            <div className="space-y-4">
+              <FormField
+                control={form.control}
+                name="email"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Email</FormLabel>
+                    <FormControl>
+                      <Input
+                        {...field}
+                        disabled={isPending}
+                        placeholder="manhdao@gmail.com"
+                        type="email"
+                        name="email"
+                        required
+                        onChange={handleChange}
+                        value={data.email}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </div>
+            <FormError message={error} />
+            <FormSuccess message={success} />
 
-          <Button
-            disabled={isPending}
-            // onClick={success_notification}
-            type="submit"
-            className="w-full"
-          >
-            Login
-          </Button>
-          <ToastContainer />
-        </form>
-      </Form>
-    </CardWrapper>
+            <Button
+              disabled={isPending}
+              // onClick={success_notification}
+              type="submit"
+              className="w-full"
+            >
+              Login
+            </Button>
+            <ToastContainer />
+          </form>
+        </Form>
+      </CardWrapper>
+    </div>
   );
 };
