@@ -10,7 +10,7 @@ import { InfomationHomepage } from "@/components/auth/homepage/infomation-homepa
 import { GithubInfoHomepage } from "@/components/auth/homepage/githubinfo-homepage";
 import { FooterHomepage } from "@/components/auth/homepage/footer-homepage";
 import StarsCanvas from "@/components/dynamic-effects/Stars";
-import FadeIn from "react-fade-in";
+// import FadeIn from "react-fade-in";
 
 import EarthCanvas from "@/components/dynamic-effects/Earth";
 import { ToastContainer } from "react-toastify";
@@ -19,12 +19,13 @@ export default function HomePage() {
   const [loading, setLoading] = useState(false);
   const [logoutMessage, setLogoutMessage] = useState("");
 
+
   return (
     <div className="app flex min-h-screen flex-col justify-between">
       <div className="app-top-box">
         {/* HEADER */}
         <HeaderHomepage authenticated={authenticated} />
-        <FadeIn transitionDuration={400}>
+        {/* <FadeIn transitionDuration={400}> */}
           {/* MAIN */}
           <div>
             <MainHomepage />
@@ -57,7 +58,7 @@ export default function HomePage() {
           <div>
             <FooterHomepage />
           </div>
-        </FadeIn>
+        {/* </FadeIn> */}
       </div>
       {logoutMessage && <div>{logoutMessage}</div>}
       <ToastContainer />
