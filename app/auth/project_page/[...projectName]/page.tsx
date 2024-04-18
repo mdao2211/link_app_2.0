@@ -2,7 +2,7 @@
 import { DialogDemo } from "@/app/auth/project_page/create-link/page";
 import UserProjectPage from "../user/page";
 import { MenuList } from "@/app/auth/project_page/list/menu-list";
-const AuthLayout = ({ children }: { children: React.ReactNode }) => {
+const AuthLayout = () => {
   const projectID = window.location.pathname.replace("auth/project_page/", "");
   console.log(projectID);
 
