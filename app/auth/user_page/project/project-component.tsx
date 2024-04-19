@@ -52,12 +52,6 @@ export const ProjectComponent = ({ data }: { data: ProjectComponentData }) => {
                 {data.totalLink || 0} links
               </h2>
             </div>
-            <div className="flex items-center space-x-1 text-gray-500">
-              <Image src={barIcon} alt={"BarIcon"}></Image>
-              <h2 className="whitespace-nowrap text-sm">
-                {data.totalClick || 0} clicks
-              </h2>
-            </div>
           </div>
         </div>
       </Link>

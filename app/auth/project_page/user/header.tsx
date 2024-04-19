@@ -180,12 +180,6 @@ export default function UserHeader(props: any) {
                 <div className="relative mt-1 max-h-72 w-full space-y-0.5 overflow-auto rounded-md bg-white p-2 text-base sm:w-60 sm:text-sm sm:shadow-lg">
                   <div className="p-2 text-xs text-gray-500">My Projects</div>
                   {renderProject()}
-                  <button className="flex w-full cursor-pointer items-center space-x-2 rounded-md p-2 transition-all duration-75 hover:bg-gray-100">
-                    <Image src={plusButton} alt={"plus button"} />
-                    <span className="block truncate">
-                      <button onClick={togglePopup}>Add a new project</button>
-                    </span>
-                  </button>
                 </div>
               </div>
             )}
