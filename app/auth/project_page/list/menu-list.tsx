@@ -43,7 +43,7 @@ export function MenuList(props: any) {
     try {
       const res = await apiCall(
         "GET",
-        `http://localhost:8080/{projectSlug}/sort-by-total-click-url?projectID=${props.getDetailProject.projectID}`,
+        `http://localhost:8080/{projectSlug}/sort-by-create-date?projectID=${props.getDetailProject.projectID}`,
       );
       console.log(res);
       setSortBy("Date Added");
@@ -54,7 +54,7 @@ export function MenuList(props: any) {
     try {
       const res = await apiCall(
         "GET",
-        `http://localhost:8080/{projectSlug}/sort-by-create-date?projectID=${props.getDetailProject.projectID}`,
+        `http://localhost:8080/{projectSlug}/sort-by-total-click-url?projectID=${props.getDetailProject.projectID}`,
       );
       console.log(res);
       setSortBy("Number Clicks");
@@ -64,17 +64,23 @@ export function MenuList(props: any) {
   const searchListLink = async (
     e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
   ) => {
-    setSearch(e.target.value);
-    try {
-      const res = await apiCall(
-        "GET",
-        `http://localhost:8080/{projectSlug}/search?search=${e.target.value}`,
-      );
-      console.log(res);
+    const searchText = e.target.value;
+    setSearch(searchText);
 
-      setData(res);
-    } catch {}
+    if (searchText !== "") {
+      try {
+        const res = await apiCall(
+          "GET",
+          `http://localhost:8080/${props.getDetailProject.projectSlug}/search?search=${searchText}&projectID=${props.getDetailProject.projectID}`,
+        );
+        console.log(res);
+        setData(res);
+      } catch {}
+    } else {
+      getListLink();
+    }
   };
+
   useEffect(() => {
     getListLink();
     console.log(props.reloadData);
